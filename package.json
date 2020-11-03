@@ -1,0 +1,25 @@
+{
+  "name": "gecons",
+  "version": "1.0.0",
+  "description": "Gecons sitio oficial",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/milemonson/Gecons.git"
+  },
+  "keywords": [
+    "Gecons"
+  ],
+  "author": "Milena Monzón, Eduardo Brahim Alí",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/milemonson/Gecons/issues"
+  },
+  "homepage": "https://github.com/milemonson/Gecons#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
