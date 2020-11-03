@@ -1,0 +1,69 @@
+@font-face {
+  font-family: "akkoItalic", sans-serif;
+  src: url("Akko W04 Bold Italic.ttf"); }
+body {
+  background-color: black; }
+
+h1 {
+  color: #114c76 !important; }
+
+h1, h2 {
+  font-family: "akkoItalic", sans-serif; }
+
+.navbar {
+  font-family: "akkoItalic", sans-serif;
+  font-size: 15px;
+  padding: 0; }
+
+.nav-item {
+  padding: 0px 20px;
+  line-height: 2.5; }
+
+.nav-item:hover {
+  background: #114c76; }
+
+.bg-dark {
+  background: black !important; }
+
+.bg-acceso {
+  background: #114c76 !important; }
+
+.bg-acceso a {
+  color: black !important; }
+
+.carousel {
+  border-bottom: 50px black solid; }
+
+.carousel-item > img {
+  animation: zoom 1s; }
+
+.carousel-caption {
+  bottom: 40%; }
+
+@keyframes zoom {
+  from {
+    transform: scale(1.3, 1.3); }
+  to {
+    transform: scale(1, 1); } }
+@media (max-width: 767px) {
+  #panel-style-selector {
+    display: none; } }
+.sidebar .tagcloud a {
+  font-size: 11px !important; }
+
+body::-webkit-scrollbar {
+  width: 10px;
+  background-color: black; }
+
+body::-webkit-scrollbar-thumb {
+  background-color: #114c76; }
+
+#myVideo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  filter: opacity(70%); }
+
+/*# sourceMappingURL=styleHome.css.map */
