@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * Asociaciones
      */
     static associate(models) {
-      // define association here
+      this.belongsTo(models.Apartment);
     }
   };
   Image.init({

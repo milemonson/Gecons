@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
          * Asociaciones
          */
         static associate(models) {
-            // define association here
+            this.hasMany(models.Apartment);
         }
     };
     Building.init({
