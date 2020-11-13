@@ -5,17 +5,22 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Image extends Model {
     /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
+     * Asociaciones
      */
     static associate(models) {
       // define association here
     }
   };
   Image.init({
-    url: DataTypes.STRING,
-    apartment_id: DataTypes.INTEGER
+    url: {
+        type : DataTypes.STRING,
+        allowNull : false,
+        unique : true
+    },
+    apartmentId: {
+        type : DataTypes.INTEGER.UNSIGNED,
+        field : "apartment_id"
+    }
   }, {
     sequelize,
     modelName: 'Image',

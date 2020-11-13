@@ -5,17 +5,22 @@ const {
 module.exports = (sequelize, DataTypes) => {
     class Admin extends Model {
         /**
-         * Helper method for defining associations.
-         * This method is not a part of Sequelize lifecycle.
-         * The `models/index` file will call this method automatically.
+         * Asociaciones
          */
         static associate(models) {
-            // define association here
+            this.hasMany(models.Token);
         }
     };
     Admin.init({
-        name: DataTypes.STRING,
-        password: DataTypes.STRING
+        name: {
+            type: DataTypes.STRING(191),
+            allowNull : false,
+            unique : true
+        },
+        password: {
+            type: DataTypes.STRING(70),
+            allowNull : false
+        }
     }, {
         sequelize,
         modelName: 'Admin',
