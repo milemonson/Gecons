@@ -10,8 +10,8 @@ router.get("/:id", controller.detail);
 
 router.post("/create", controller.create);
 
-router.put("/edit/id", controller.update);
+router.put("/edit/:id", controller.update);
 
-router.delete("/delete/id", controller.delete);
+router.delete("/delete/:id", controller.delete);
 
 module.exports = router;
