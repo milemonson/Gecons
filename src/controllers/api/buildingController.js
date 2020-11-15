@@ -2,7 +2,7 @@
  * CRUD para el endpoint de la API HTTP encargado de las operaciones relacionadas a la entidad Building.
  */
 
-const { Building, Apartment, Sequelize } = require("../../database/models");
+const { Building, Apartment } = require("../../database/models");
 const LIMIT_PER_PAGE = 10;
 
 module.exports = {
@@ -122,6 +122,25 @@ module.exports = {
      * Borra un registro en la base de datos teniendo en cuenta sus asociaciones.
      */
     delete : (req, res) => {
+
+        // Destroy provisional: En un futuro va a haber que tener en cuenta todos
+        // los registros asociados a el edificio y borrarlos en una sola transacción...
+        Building.destroy({ where :{ id : Number(req.params.id) } })
+            .then(() => {
+                res.status(204).json();
+            },
+            // Rechazo de la creación
+            reject => {throw new Error(reject)})
+            .catch(error => {
+                console.log(error);
+                // TODO : encontrar una forma más específica de informar el error....
+                res.status(500).json({
+                    meta : {
+                        status : 500,
+                        statusMsg : "Internal server error"
+                    }
+                });
+            });
 
     },
 
