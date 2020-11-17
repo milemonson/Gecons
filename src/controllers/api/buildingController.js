@@ -79,42 +79,7 @@ module.exports = {
                 response.meta.status = 500;
                 response.meta.statusMsg = "Internal server error";
                 
-                res.json(response);
-            });
-    },
-
-    /**
-     * Detalle de un Edificio según su ID
-     */
-    detail : (req, res) => {
-
-    },
-
-    /**
-     * Crea un nuevo registro en la base de datos.
-     */
-    create : (req, res) => {
-
-        let newBuilding = {
-            name : req.body.name,
-            password : req.body.password
-        }
-
-        Building.create(newBuilding)
-            .then(created => {
-                if(created) res.status(204).json();
-            },
-            // Rechazo de la creación
-            reject => {throw new Error(reject)})
-            .catch(error => {
-                console.log(error);
-                // TODO : encontrar una forma más específica de informar el error....
-                res.status(500).json({
-                    meta : {
-                        status : 500,
-                        statusMsg : "Internal server error"
-                    }
-                });
+                res.status(500).json(response);
             });
     },
 
@@ -141,13 +106,6 @@ module.exports = {
                     }
                 });
             });
-
-    },
-
-    /**
-     * Cambia parcial ó totalmente un registro existente.
-     */
-    update : (req, res) => {
 
     }
 
