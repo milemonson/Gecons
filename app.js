@@ -2,6 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const path = require("path");
 const mainRoutes = require("./src/routes/mainRoutes");
+const buildingRoutes = require("./src/routes/buildingRoutes");
+const apartmentRoutes = require("./src/routes/apartmentRoutes");
 
 // ********** Rutas de la API **********
 const apiBuildingRoutes = require("./src/routes/api/buildingRoutes");
@@ -11,11 +13,15 @@ const app = express();
 // ********** Conf de Express y variables de entorno **********
 dotenv.config({path : path.join(__dirname, ".env")});
 app.use(express.static("public"));
-app.use(express.urlencoded({ extended: false })); // Arma el objeto body
-app.use(express.json()) // Reconoce los objetos que vienen por medio del request como objetos JSON
+app.set("view engine", "ejs");
+
+app.use(express.urlencoded({ extended: false })); 
+app.use(express.json())
 
 // ********** Middlewares a nivel de aplicación **********
-app.get("/", mainRoutes);
+app.use("/", mainRoutes);
+app.use("/admin/buildings", buildingRoutes);
+app.use("/admin/apartments", apartmentRoutes);
 
 // ********** Entrada a la API **********
 app.use("/api/buildings", apiBuildingRoutes);
