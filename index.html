@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GECONSS</title>
+    <title>GECONS</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="shortcut icon" href="./img/icongecons.png" >
     <link rel="stylesheet"  href="./css/serviceplaning.css">
     <link rel="stylesheet" href="./css/styleHome.css">    
   </head>
 <body>
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+    <nav id="navbar-example2"class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="index.html"><img src="img/gecons.png" alt=""></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -39,7 +40,9 @@
           </ul>
         </div>
 </nav>
-<div id="carouselExampleControls" class="carousel slide carousel-fade" data-ride="carousel">
+<div data-spy="scroll" data-target="#navbar-example2" data-offset="0">
+
+  <div id="carouselExampleControls" class="carousel slide carousel-fade" data-ride="carousel">
     <div class="carousel-inner">
       <div class="carousel-item active">
         <img src="img/construction.jpg"  class="d-block w-100" alt="...">
@@ -60,8 +63,8 @@
     </a>
   </div>
 
-  <div class="container mt-5 mb-5 ">
-      <div class="row align-items-center bg-dark">
+  <div class="container mt-5 mb-5 animate__animated animate__bounceIn ">
+      <div class="row align-items-center bg-dark ">
             <div class="col-sm-6">
                 <h1 class="text-center display-4">BIENVENIDOS</h1>
                 <p class="text-white text-justify pt-3 p-4">Somos una empresa constructora, especializada en gestionar todas las etapas constructivas con un equipo de profe­sionales altamente calificados, lo que nos ofrece la capacidad de satisfacer los requerimien­tos de nuestros clientes, abarcando desde el estudio del proyecto, hasta la finalización de la obra.</p>
@@ -85,7 +88,7 @@
     <div id="wptime-plugin-preloader">
  
    <section id="empresa"class="page-title-wrap page-title-wrap-bg" style="background-image: url(img/selective-focus-photography-cement-2219024.jpg);">
-   <div class="page-title-overlay"></div>
+   <div class="page-title-overlay">  </div>
    <div class="container">
    <div class="page-title-inner block-center">
        <div class="block-center-inner">
@@ -93,37 +96,60 @@
    </div>
    </div>
    </div>
+
    </section>
    
    <main role="main" class="site-content-page">
     <div class="darna-heading style1 margin-bottom-40">
-       <h2>Nuestra Compañia</h2>
+       <h2>Compania</h2>
        </div>
  
        <dl class="row">
-         <dt class="col-sm-3"></dt>
-         <dd class="col-sm-9">Gecons es responsable socialmente porque busca contribuir al desarrollo sostenible de la sociedad y del ambiente , a través de comportamientos transparentes y éticos en los negocios, cumplimiento de las expectativas de las partes interesadas, cumplimiento de la legislación y alineamiento que exige la normativa nacional.</dd>
-       
-         <dt class="col-sm-3"></dt>
-         <dd class="col-sm-9">
-           <p>Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.</p>
-           <p>Donec id elit non mi porta gravida at eget metus.</p>
-         </dd>
-       
-         <dt class="col-sm-3"></dt>
-         <dd class="col-sm-9">Etiam porta sem malesuada magna mollis euismod.</dd>
-       
-         
-           </dl>
+      
+         <dt class="col-sm-3 animate__animated animate__backInLeft"> Nuestra Filosofia</dt>
+         <dd class="col-sm-9 animate__animated animate__backInLeft">Gecons es responsable socialmente porque busca contribuir al desarrollo sostenible de la sociedad y del ambiente , a través de comportamientos transparentes y éticos en los negocios, cumplimiento de las expectativas de las partes interesadas, cumplimiento de la legislación y alineamiento que exige la normativa nacional.</dd>
+         <dt class="col-sm-3 animate__animated animate__backInRight">Nuestra Experiencia</dt>
+         <dd class="col-sm-9 animate__animated animate__backInRight">Contamos con la experiencia de empresas y personas con más de 15 años en el sector de vivienda, infraestructura y servicios públicos a nivel provincial.</dd>
+         <dt class="col-sm-3 animate__animated animate__backInLeft"> Compromiso</dt>
+         <dd class="col-sm-9 animate__animated animate__backInLeft">Gecons está comprometida con sus clientes en brindar el mejor precio y calidad de lo que ofrece, y buscar alcanzar los requisitos particulares que cada uno requiera.
+           También se compromete a la excelencia profesional de sus empleados, capacitados para las etapas de planificación, desarrollo y evaluación de sus proyectos arquitectónicos.</dd>
+       </dl>
          
  
        <div class="darna-heading style1 margin-bottom-40">
          <h3>NUESTROS CLIENTES</h3>
          </div>
+         <div class="clientes">
+         <div class="slider">
+          <div class="slide-track">
+            <div class="slide">
+              <img src="img/horizonte.1.png" >
+            </div>
+           <div class="slide" style="margin-left:50px;">
+              <img src="img/muni1.png" >
+            </div>
+            <div class="slide">
+              <img src="img/edif.png" />
+            </div>
+            <div class="slide">
+              <img src="img/adm.png"  />
+            </div>
+            <div class="slide">
+              <img src="img/inmo.png"/>
+            </div>
+            <div class="slide">
+              <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/7.png"  />
+            </div>
+            <div class="slide">
+              <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/557257/1.png" />
+            </div>
+            
+          </div>
+        </div>
+      </div>
        </main>
  <!--section description-->
- 
-     </div>
+    </div>
    </div>  
 
    <!--PROYECTOS-->
@@ -141,73 +167,22 @@
    </div>
    </section>
   </div>
-  </div>  
-  
+</div>
+
      
-  <div class="row">
-    <div class="col-md-12">
   
-      <div id="mdb-lightbox-ui"></div>
-  
-      <div class="mdb-lightbox">
-  
-        <figure class="col-md-4">
-          <a href="img\action-adult-athlete-build-259984.jpg" data-size="1600x1067">
-            <img alt="picture" src="img/action-adult-athlete-build-259984.jpg" class="img-fluid">
-          </a>
-        </figure>
-  
-        <figure class="col-md-4">
-          <a href="img\action-artisan-burnt-construction-1145434.jpg" data-size="1600x1067">
-            <img alt="picture" src="img\action-artisan-burnt-construction-1145434.jpg" class="img-fluid"/>
-          </a>
-        </figure>
-  
-        <figure class="col-md-4">
-          <a href="img\build-builder-construction-equipment-585419.jpg" data-size="1600x1067">
-            <img alt="picture" src="img\build-builder-construction-equipment-585419.jpg" class="img-fluid" />
-          </a>
-        </figure>
-  
-        <figure class="col-md-4">
-          <a href="img\construction-of-a-building-2100681.jpg" data-size="1600x1067">
-            <img alt="picture" src="img\construction-of-a-building-2100681.jpg" class="img-fluid" />
-          </a>
-        </figure>
-  
-        <figure class="col-md-4">
-          <a href="img\gray-concrete-wall-1576871.jpg" data-size="1600x1067">
-            <img alt="picture" src="img\gray-concrete-wall-1576871.jpg" class="img-fluid" />
-          </a>
-        </figure>
-  
-        <figure class="col-md-4">
-          <a href="img\industry-metal-fire-radio-73833.jpg" data-size="1600x1067">
-            <img alt="picture" src="img\industry-metal-fire-radio-73833.jpg" class="img-fluid" />
-          </a>
-        </figure>
-  
-        <figure class="col-md-4">
-          <a href="img\tower-crane-during-daytime-93400.jpg" data-size="1600x1067">
-            <img alt="picture" src="img\tower-crane-during-daytime-93400.jpg" class="img-fluid" />
-          </a>
-        </figure>
- </div>
-  </div>
-  </div>
-    
 
 <!--SERVICIO-->
   <div id="wrapper-content" class="clearfix">
+   <div id="wptime-plugin-preloader"></div>
 
-    <div id="wptime-plugin-preloader"></div>
     <section id="servicios" class="page-title-wrap page-title-wrap-bg" style="background-image: url(img/construction3.jpg);">
     <div class="page-title-overlay"></div>
     <div class="container">
     <div class="page-title-inner block-center">
-        <div class="block-center-inner">
+   <div class="block-center-inner">
      <h1>SERVICIOS</h1>
-    </div>
+</div>
     </div>
     </div>
     </section>
@@ -216,6 +191,100 @@
      <div class="darna-heading style1 margin-bottom-40">
         <h2>CONOCE NUESTROS SERVICIOS</h2>
         </div>
+        <h3 class="center">Construcción</h3>
+        <div class="containerconstruction">
+        <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12" >
+          <div class="item item-align-center">
+          <p class="center"><strong>Civil</strong></p>
+          <ul>
+          <li>Construccion viales</li>
+          <li>Construccion fluviales</li>
+          <li>Mantenimiento de pavimentacion</li>
+          <li>Contruccion de tuneles</li>
+          </ul>
+          </div>
+          </div>
+
+          <div class="col-md-3 col-sm-6 col-xs-12" >
+            <div class="item item-align-center">
+            <p class="center"><strong>Residencial</strong></p>
+            <ul>
+            <li>Departamentos</li>
+            <li>Casas</li>
+            <li>Countrys</li>
+            <li>Barrios cerrados</li>
+            </ul>
+            </div>
+            </div>
+     
+         
+            <div class="col-md-3 col-sm-6 col-xs-12" >
+              <div class="item item-align-center">
+              <p class="center "><strong>Remodelacion</strong></p>
+              <ul>
+              <li>Interior</li>
+              <li>Exterior</li>
+              <li>Fachada</li>
+              <li>Pintura de interiores y ext</li>
+              </ul>
+              </div>
+              </div>
+
+          
+            </div>
+          </div>
+        <h3 class="center">Mantenimiento</h3>
+        <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12" >
+          <div class="item item-align-center">
+          <p class="center"><strong>Pintura</strong></p>
+          <ul>
+          <li>Pintura de paredes exteriores</li>
+          <li>Pintura en cocinas</li>
+          <li>Pintura en salas</li>
+          <li>Pintura de interiores</li>
+          </ul>
+          </div>
+          </div>
+
+          <div class="col-md-3 col-sm-6 col-xs-12" >
+            <div class="item item-align-center">
+            <p class="center"><strong>Albañileria</strong></p>
+            <ul>
+            <li>Cemento y concreto</li>
+            <li>Reparaciones de Muros</li>
+            <li>Instalacion piso marmol/azulejos</li>
+            <li>Reparaciones caños fluv, bardas y tabiques</li>
+            </ul>
+            </div>
+            </div>
+     
+         
+            <div class="col-md-3 col-sm-6 col-xs-12" >
+              <div class="item item-align-center">
+              <p class="center "><strong>Aberturas</strong></p>
+              <ul>
+              <li>Puertas y ventanas</li>
+              <li>Herreria moderna</li>
+              <li>Aberturas modernas</li>
+              <li>Pintura de interiores</li>
+              </ul>
+              </div>
+              </div>
+
+              <div class="col-md-3 col-sm-6 col-xs-12" >
+                <div class="item item-align-center">
+                <p class="center"><strong>Interiores</strong></p>
+                <ul>
+                <li>Yeso y aplanado de paredes</li>
+                <li>Pasta texturizada en paredes</li>
+                <li>Remodelacion de cocina</li>
+                <li>Pintura de interiores</li>
+                </ul>
+                </div>
+                </div>
+              </div>
     </main>
       
       </div>
@@ -257,7 +326,7 @@
   <h3>DEJANOS TU CONSULTA</h3>
   <div>Responderemos a la brevedad.</div>
   </div>
-    <div class="vc_empty_space" style="height: 32px"><span class="vc_empty_space_inner"></span></div>
+    <div class="vc_empty_space" ><span class="vc_empty_space_inner"></span></div>
     
   <form method="post" action="contacto/contacto.php">
     
@@ -331,16 +400,13 @@
   <!-- .entry-content -->
   </div>
   </div>
+<!--scroll-->
+</div>
 
-  <footer class="main-footer-wrapper">
-    <video autoplay muted loop id="myVideo">
-      <source src="./img/freestock_4935632.mp4" type="video/mp4">
-  </video>  
+<footer>
+  
 
-<div id="wrapper-footer">
-<div class="main-footer">
-<div class="footer_inner clearfix">
- 
+
 <div class="container">
 <div class="row">
 <div class="col-md-6 col-md-push-3">
@@ -360,17 +426,17 @@
 
 <div class="footer_top_holder col-3">
 <div class="container">
-<div class="row footer-top-col-3 footer-5">
+<div class="row footer-top-col-3 footer-5 center center">
 
 <div class="sidebar col-md-4 col-sm-12 col-1">
   <aside id="nav_menu-2" class="widget widget_nav_menu">
     <div class="menu-menu-1-container">
       <ul id="menu-menu-1" class="menu">
 <li id="menu-item-23" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-11 current_page_item menu-item-23" style="min-width: 50%;"><a href="">HOME</a></li>
-<li id="menu-item-455" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-455" style="min-width: 50%;"><a href="">EMPRESA</a></li>
-<li id="menu-item-29" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-29" style="min-width: 50%;"><a href="">PROYECTOS</a></li>
-<li id="menu-item-564" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-564" style="min-width: 50%;"><a href="">SERVICIOS</a></li>
-<li id="menu-item-576" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-576" style="min-width: 50%;"><a href="">CONTACTOS</a></li>
+<li id="menu-item-455" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-455" style="min-width: 50%;"><a href="#empresa">EMPRESA</a></li>
+<li id="menu-item-29" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-29" style="min-width: 50%;"><a href="#proyectos">PROYECTOS</a></li>
+<li id="menu-item-564" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-564" style="min-width: 50%;"><a href="#servicios">SERVICIOS</a></li>
+<li id="menu-item-576" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-576" style="min-width: 50%;"><a href="#contactos">CONTACTOS</a></li>
 </ul>
 </div>
 </aside>
@@ -420,11 +486,7 @@
 </div>
 </div>
 
-</div> 
-</div>
-</div>
 </footer>
-
 
 <div class="container-fluid text-center text-white bg-dark p-3">
       <p class="small">&copy; Todos los derechos reservados | Gecons | 2020</p>
