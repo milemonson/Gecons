@@ -2,7 +2,7 @@ module.exports = {
 
     /** Listado de todos los edificios registrados */
     show : (req, res) => {
-
+        res.render("admin/buildings");
     },
 
     /** Vista de creación de un nuevo edificio */
