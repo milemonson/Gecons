@@ -7,7 +7,7 @@ module.exports = {
 
     /** Vista de creación de un nuevo edificio */
     create : (req, res) => {
-        
+        res.render("admin/addBuilding");
     },
 
     /** Procesamiento de la creación de un edificio */
