@@ -12,8 +12,14 @@
             <!-- Nombre -->
             <div class="form-group">
                 <label for="name">Nombre del edificio</label>
-                <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp">
-                <small id="nameHelp" class="form-text text-muted">Máx 191 caracteres, campo obligatório.</small>
+                <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp"
+                    value="<%= locals.userInput && userInput.name ? userInput.name : '' %>">
+                <small id="nameHelp" class="form-text text-muted">
+                    Máx 191 caracteres, campo obligatório.
+                    <% if(locals.errors && errors.name) { %>
+                        <span class="alert-danger"><%= errors.name.msg %></span>
+                    <% } %>
+                </small>
             </div>
             
             <!-- Contraseña -->
@@ -43,15 +49,22 @@
                     Debe contar con una mayúscula, una minúscula y un número. 
                     8 caracteres como mínimo y 18 como máximo.
                     Campo obligatório.
+                    <% if(locals.errors && errors.password) { %>
+                        <span class="alert-danger"><%= errors.password.msg %></span>
+                    <% } %>
                 </small>
             </div>
 
             <!-- Enviar a.. -->
             <div class="form-group">
                 <label for="send-to">Enviar a:</label>
-                <input type="email" class="form-control" id="send-to" name="send-to" aria-describedby="sendToHelp">
+                <input type="email" class="form-control" id="send-to" name="send-to" aria-describedby="sendToHelp"
+                    value="<%= locals.userInput && userInput["send-to"] ? userInput["send-to"] : '' %>">
                 <small id="sendToHelp" class="form-text text-muted">
                     Debe ingresar un mail válido. Campo opcional.
+                    <% if(locals.errors && errors["send-to"]) { %>
+                        <span class="alert-danger"><%= errors["send-to"].msg %></span>
+                    <% } %>
                 </small>
             </div>
 
