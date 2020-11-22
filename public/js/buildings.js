@@ -14,7 +14,6 @@ window.addEventListener("load", function(){
     }
 
     // Llenado de la tabla
-    // TODO : Añadir funcionalidad a los íconos
     function loadTable(page){
         apiCall(`/api/buildings/list?page=${page}`, (result) => {
             let content = "";
@@ -26,14 +25,33 @@ window.addEventListener("load", function(){
                         <th>${element.name}</th>
                         <td>${element.apartments}</td>
                         <td>
-                            <i class="fas fa-edit"></i>
+                            <a href="/admin/buildings/${element.id}/edit">
+                                <i class="fas fa-edit"></i>
+                            <a>
                         </td>
-                        <td><i class="fas fa-trash-alt"></i></td>
+                        <td data-id="${element.id}"><i class="fas fa-trash-alt"></i></td>
                     </tr>`;
             });
 
             tableBody.innerHTML = content;
+
+            // Suscripción a eventos de los botones de borrado
+            for(row of tableBody.children){
+                let lastCol = row.children.item(row.children.length - 1);
+                
+                lastCol.addEventListener("click", () => deleteBuilding(lastCol.dataset.id));
+            }
         });
+    }
+
+    // Borrado desde la API
+    function deleteBuilding(id){
+        // TODO : Mostrar algún tipo de popup de confirmación
+        // TODO : Que el paginado reaccione al cambio de elementos
+        fetch(`/api/buildings/delete/${id}`, { method : "DELETE" })
+            .then(response => {
+                loadTable(currentPage);
+            });
     }
 
     // Armado del paginado
