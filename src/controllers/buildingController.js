@@ -29,7 +29,7 @@ module.exports = {
 
             Building.create(newBuilding)
                 .then(created => {
-                    // TODO : Crear las carpetas pertinentes con mdirp
+                    // TODO : Crear las carpetas pertinentes con mkdirp
                     // TODO : Procesar el mail
                     res.redirect("/admin/buildings");
                 });
@@ -62,6 +62,35 @@ module.exports = {
     /** Procesamiento de la edición de un edificio existente */
     update : (req, res) => {
         
+        let errors = validationResult(req);
+
+        if(errors.isEmpty()){
+            let updated = {
+                name : req.body.name,
+                password : bcrypt.hashSync(req.body.password, NUMBER_OF_SALT)
+            }
+
+            // TODO : Cambiar el nombre de las carpetas pertinentes con mkdirp 
+            // TODO : Procesar el mail
+            Building.update(updated, { where : { "id" : req.params.id } })
+                .then(() => {
+                    res.redirect("/admin/buildings");
+                });
+        } else {
+
+            Building.findByPk(req.params.id, {attributes : ["id", "name"]})
+                .then(editable => {
+                    res.render("admin/editbuilding", {
+                        errors : errors.mapped(),
+                        editable : editable,
+                        userInput : {
+                            "send-to" : req.body["send-to"]
+                        }
+                    })
+                });
+
+        }
+
     }
 
 }
