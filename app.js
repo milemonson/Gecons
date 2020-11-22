@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const path = require("path");
+const methodOverride = require("method-override");
 const mainRoutes = require("./src/routes/mainRoutes");
 const buildingRoutes = require("./src/routes/buildingRoutes");
 const apartmentRoutes = require("./src/routes/apartmentRoutes");
@@ -13,11 +14,13 @@ const app = express();
 // ********** Conf de Express y variables de entorno **********
 dotenv.config({path : path.join(__dirname, ".env")});
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: false })); 
+app.use(express.json())
+app.use(methodOverride("_method"));
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src", "views"));
 
-app.use(express.urlencoded({ extended: false })); 
-app.use(express.json())
 
 // ********** Middlewares a nivel de aplicación **********
 app.use("/", mainRoutes);
