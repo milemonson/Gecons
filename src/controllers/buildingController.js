@@ -49,7 +49,14 @@ module.exports = {
 
     /** Edición de un edificio existente */
     edit : (req, res) => {
-        
+
+        Building.findByPk(req.params.id, { attributes : ["id", "name"]})
+            .then(editable => {
+
+                res.render("admin/editBuilding", {
+                    editable : editable
+                });
+            })
     },
 
     /** Procesamiento de la edición de un edificio existente */
