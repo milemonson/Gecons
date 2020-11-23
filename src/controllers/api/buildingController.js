@@ -75,12 +75,38 @@ module.exports = {
             // Rechazo de la petición
             reject => {throw new Error(reject)})
             .catch(error => {
-                console.log(error);
                 response.meta.status = 500;
                 response.meta.statusMsg = "Internal server error";
                 
                 res.status(500).json(response);
             });
+    },
+
+    /**
+     * Retorna todos los edificios sin formato de lista
+     */
+    getBuildings : (req, res) => {
+
+        Building.findAll({ attributes : ["name", "id"] })
+            .then(result => {
+                res.status(200).json({
+                    meta : {
+                        status : 200,
+                        statusMsg : "Ok",
+                        count : result.length
+                    },
+                    data : result
+                });
+            },
+            // Rechazo de la petición
+            reject => {throw new Error(reject)})
+            .catch(error => {
+                response.meta.status = 500;
+                response.meta.statusMsg = "Internal server error";
+                
+                res.status(500).json(response);
+            });
+
     },
 
     /**
