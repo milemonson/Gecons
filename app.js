@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const path = require("path");
+const fs = require("fs");
 const methodOverride = require("method-override");
 const mainRoutes = require("./src/routes/mainRoutes");
 const buildingRoutes = require("./src/routes/buildingRoutes");
@@ -29,6 +30,13 @@ app.use("/admin/apartments", apartmentRoutes);
 
 // ********** Entrada a la API **********
 app.use("/api/buildings", apiBuildingRoutes);
+
+// ********** Creación de las carpetas para el guardado de archivos **********
+let docsFolder = path.join(__dirname, "docs"); // Documentos descargables
+let imagesFolder = path.join(__dirname, "public", "img", "uploaded"); // Imágenes subidas
+
+if(!fs.existsSync(docsFolder)) fs.mkdirSync(docsFolder);
+if(!fs.existsSync(imagesFolder)) fs.mkdirSync(imagesFolder);
 
 // ********** Ejecución del servidor **********
 app.listen(process.env.APP_PORT, 
