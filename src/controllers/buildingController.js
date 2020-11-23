@@ -1,7 +1,11 @@
+const fs = require("fs");
+const path = require("path");
 const bcrypt = require("bcryptjs");
-const { validationResult } = require("express-validator");
+const { validationResult, Result } = require("express-validator");
 const { Building } = require("../database/models");
 
+const DOCS_DIRECTORY = path.join(__dirname, "..", "..", "docs");
+const IMG_DIRECTORY = path.join(__dirname, "..", "..", "public", "img", "uploaded");
 const NUMBER_OF_SALT = 12;
 
 module.exports = {
@@ -28,15 +32,17 @@ module.exports = {
             }
 
             Building.create(newBuilding)
+                // TODO : Procesar el mail
                 .then(created => {
-                    // TODO : Crear las carpetas pertinentes con mkdirp
-                    // TODO : Procesar el mail
+                    // Creación de las carpetas para subida de documentos e imágenes
+                    fs.mkdirSync(path.join(DOCS_DIRECTORY, created.name));
+                    fs.mkdirSync(path.join(IMG_DIRECTORY, created.name));
+
                     res.redirect("/admin/buildings");
                 });
                 // TODO : Atajar el error
 
         } else {
-
             res.render("admin/addBuilding", {
                 errors : errors.mapped(),
                 userInput : {
@@ -65,14 +71,29 @@ module.exports = {
         let errors = validationResult(req);
 
         if(errors.isEmpty()){
-            let updated = {
-                name : req.body.name,
-                password : bcrypt.hashSync(req.body.password, NUMBER_OF_SALT)
+            // TODO : Revisar el cambio de contraseñas, no se debería cambiar
+            // en caso de que no se ingrese nada...
+            let updated = { name : req.body.name }
+
+            if(req.body.password && req.body.password != ""){
+                updated.password = bcrypt.hashSync(req.body.password, NUMBER_OF_SALT);
             }
 
-            // TODO : Cambiar el nombre de las carpetas pertinentes con mkdirp 
             // TODO : Procesar el mail
-            Building.update(updated, { where : { "id" : req.params.id } })
+            Building.findByPk(Number(req.params.id), { attributes : ["name"] })
+                .then(result => {
+                    // Renombramiento de las carpetas de archivos
+                    if(result.name != updated.date){
+                        // Documentos
+                        fs.renameSync(path.join(DOCS_DIRECTORY, result.name),
+                                      path.join(DOCS_DIRECTORY, updated.name));
+                        // Imágenes 
+                        fs.renameSync(path.join(IMG_DIRECTORY, result.name),
+                                      path.join(IMG_DIRECTORY, updated.name));
+                    }
+                    
+                    return Building.update(updated, { where : { "id" : req.params.id } });
+                })
                 .then(() => {
                     res.redirect("/admin/buildings");
                 });
@@ -88,9 +109,7 @@ module.exports = {
                         }
                     })
                 });
-
         }
-
     }
 
 }
