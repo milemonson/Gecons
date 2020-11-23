@@ -17,8 +17,7 @@ module.exports = [
             else return Promise.resolve();
         }).withMessage("Nombre del edificio en uso."),
 
-    check("password")
-        .notEmpty().withMessage("No puede estar vacío.").bail()
+    check("password").optional({ checkFalsy : true })
         .isLength({min : 8, max : 18}).withMessage("Longitud de caracteres errónea.").bail()
         .custom(value => {
             let upper = new RegExp("[A-Z]");

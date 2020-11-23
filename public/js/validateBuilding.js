@@ -81,8 +81,16 @@ window.addEventListener("load", () => {
     function validatePassword(){
         let feedback = false;
 
-        if(password.value.length < 8 || password.value.length > 18
-            || !pwdCheck(password.value)) feedback = true;
+        if(oldPassword){ // Validaciones para la edición
+            if(password.value.length > 0 && // Sólo se tiene en cuenta si se ingrasaron datos
+              (password.value.length < 8 || password.value.length > 18)){
+                feedback = true;
+            }
+        } else { // Validaciones para la cración
+            if(password.value.length < 8 || 
+                password.value.length > 18 || 
+                !pwdCheck(password.value)) feedback = true;
+        }
 
         handleFeedback(password, feedback);
     }
