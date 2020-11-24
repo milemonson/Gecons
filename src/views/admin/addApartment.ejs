@@ -77,17 +77,38 @@
             <!-- Subida de documentos -->
             <div class="form-row input-group mt-3 mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text">Subir</span>
+                    <span class="input-group-text">Documentos de texto</span>
                 </div>
                 <div class="custom-file">
-                  <input type="file" class="custom-file-input" id="doc" aria-describedby="docHelp">
-                  <label class="custom-file-label" for="doc">Elegir archivo</label>
+                    <input type="file" class="custom-file-input" id="doc" aria-describedby="docHelp">
+                    <!-- Información del archivo desde el script -->
+                    <label class="custom-file-label" for="doc">Elegir archivo</label>
                 </div>
             </div>
             <small id="docHelp" class="form-text text-muted">
-                Sólo documentos de texto.
                 <% if(locals.errors && errors.doc) { %>
                     <span class="alert-danger"><%= errors.doc.msg %></span>
+                <% } %>
+            </small>
+
+            <!-- Subida de imágenes -->
+            <!-- 
+                A futuro se puede reemplazar con "bootstrap-fileinput", PERO hay que aprender a usarlo primero
+                https://plugins.krajee.com/file-input
+             -->
+            <div class="form-row input-group mt-3 mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Imágenes</span>
+                </div>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="images" aria-describedby="imagesHelp" multiple>
+                    <!-- Información de las imágenes desde el script -->
+                    <label class="custom-file-label" for="images">Elegir Imágenes</label>
+                </div>
+            </div>
+            <small id="docHelp" class="form-text text-muted">
+                <% if(locals.errors && errors.images) { %>
+                    <span class="alert-danger"><%= errors.images.msg %></span>
                 <% } %>
             </small>
 
@@ -103,6 +124,8 @@
         </form>
 
     </div>
+
+    <script src="/js/validateApartment.js"></script>
 
 </body>
 </html>
