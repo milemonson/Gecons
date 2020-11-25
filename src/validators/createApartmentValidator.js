@@ -1,4 +1,5 @@
 const { check } = require("express-validator");
+const { Op } = require("sequelize");
 const { Apartment } = require("../database/models");
 
 module.exports = [
@@ -8,8 +9,13 @@ module.exports = [
         .isLength({ max : 191 }).withMessage("Máximo de caracteres superado.").bail()
         .custom(async (value, { req }) => {
 
-            let result = await Apartment.findOne({ 
-                where : { buildingId : req.body.buildingId } 
+            let result = await Apartment.findOne({
+                where : { 
+                    [Op.and] : [
+                        {buildingId : req.body.buildingId},
+                        { name : value } 
+                    ]
+                }
             });
 
             if(result !== null) return Promise.reject();
