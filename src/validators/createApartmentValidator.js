@@ -6,10 +6,11 @@ module.exports = [
 
     check("name").trim()
         .notEmpty().withMessage("No puede estar vacío.").bail()
-        .isLength({ max : 191 }).withMessage("Máximo de caracteres superado.").bail()
+        .isLength({ max : 255 }).withMessage("Máximo de caracteres superado.").bail()
         .custom(async (value, { req }) => {
 
             let result = await Apartment.findOne({
+                attributes : ["name"],
                 where : { 
                     [Op.and] : [
                         {buildingId : req.body.buildingId},

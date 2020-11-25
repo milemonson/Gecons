@@ -24,7 +24,7 @@ window.addEventListener("load", function(){
         let feedback = false;
         name.value = name.value.trim();
 
-        if(name.value == "" || name.value.length > 191) feedback = true;
+        if(name.value == "" || name.value.length > 255) feedback = true;
 
         handleFeedback(name, feedback);
     }

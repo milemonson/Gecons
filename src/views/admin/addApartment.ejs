@@ -19,7 +19,7 @@
                 <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp"
                     value="<%= locals.userInput && userInput.name ? userInput.name : '' %>">
                 <small id="nameHelp" class="form-text text-muted">
-                    Máx 191 caracteres, campo obligatório.
+                    Máx 255 caracteres, campo obligatório.
                     <% if(locals.errors && errors.name) { %>
                         <span class="alert-danger"><%= errors.name.msg %></span>
                     <% } %>
