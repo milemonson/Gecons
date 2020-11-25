@@ -1,5 +1,10 @@
+const fs = require("fs");
+const path = require("path");
 const { validationResult } = require("express-validator");
 const { Building, Apartment } = require("../database/models");
+
+const DOCS_DIRECTORY = path.join(__dirname, "..", "..", "docs");
+const IMG_DIRECTORY = path.join(__dirname, "..", "..", "public", "img", "uploaded");
 
 module.exports = {
 
@@ -31,7 +36,29 @@ module.exports = {
         let errors = validationResult(req);
         
         if(errors.isEmpty()){
-            res.send("UwW ;D");
+            
+            let newApartment = {
+                name : req.body.name,
+                price : Number(req.body.price),
+                initDate : req.body["init-date"],
+                endDate : req.body["end-date"],
+                buildingId : req.body.buildingId
+            }
+
+            if(req.body.description != "")
+                newApartment.description = req.body.description;
+
+            Apartment.create(newApartment)
+                .then(created => {
+
+                    fs.mkdirSync(path.join(DOCS_DIRECTORY, req.body.buildingName, created.name));
+                    fs.mkdirSync(path.join(IMG_DIRECTORY, req.body.buildingName, created.name));
+
+                    // TODO : Insertar en BD las imágenes y el documento
+                    res.redirect("/admin/apartments");
+                });
+                // TODO : Atajar el error.
+            
         } else {
             res.render("admin/addApartment", {
                 errors : errors.mapped(),
@@ -40,13 +67,14 @@ module.exports = {
                     name : req.body.buildingName,
                     id : req.body.buildingId
                 }
-            })
+            });
         }
 
     },
 
     /** Vista de edición */
     edit : (req, res) => {
+
     },
 
     /** Procesamiento de la vista de edición */
