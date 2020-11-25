@@ -16,7 +16,8 @@
             <!-- Nombre -->
             <div class="form-group">
                 <label for="name">Nombre del departamento:</label>
-                <input type="text" class="form-control" id="name" aria-describedby="nameHelp">
+                <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp"
+                    value="<%= locals.userInput && userInput.name ? userInput.name : '' %>">
                 <small id="nameHelp" class="form-text text-muted">
                     Máx 191 caracteres, campo obligatório.
                     <% if(locals.errors && errors.name) { %>
@@ -28,7 +29,8 @@
             <!-- Descripción -->
             <div class="form-group">
                 <label for="description">Descripción:</label>
-                <textarea class="form-control" id="description" rows="3" aria-describedby="descHelp"></textarea>
+                <textarea class="form-control" id="description" name="description" rows="3" aria-describedby="descHelp"
+                    value="<%= locals.userInput && userInput.description ? userInput.description : '' %>"></textarea>
                 <small id="nameHelp" class="form-text text-muted">
                     Campo opcional. Máximo 500 caracteres.
                     <% if(locals.errors && errors.description) { %>
@@ -41,19 +43,21 @@
             <div class="form-row justify-content-around">
                 <div class="form-group">
                     <label for="init-date">Fecha de inicio:</label>
-                    <input class="form-control" type="date" id="init-date" aria-describedby="initHelp">
+                    <input class="form-control" type="date" id="init-date" name="init-date" aria-describedby="initHelp"
+                        value="<%= locals.userInput && userInput["init-date"] ? userInput["init-date"] : '' %>">
                     <small id="initHelp" class="form-text text-muted">
-                        <% if(locals.errors && errors.init) { %>
-                            <span class="alert-danger"><%= errors.init.msg %></span>
+                        <% if(locals.errors && errors["init-date"]) { %>
+                            <span class="alert-danger"><%= errors["init-date"].msg %></span>
                         <% } %>
                     </small>
                 </div>
                 <div class="form-group">
                     <label for="end-date">Fecha de finalización:</label>
-                    <input class="form-control" type="date" id="end-date" aria-describedby="endHelp">
+                    <input class="form-control" type="date" id="end-date" name="end-date" aria-describedby="endHelp"
+                        value="<%= locals.userInput && userInput["end-date"] ? userInput["end-date"] : '' %>">
                     <small id="endHelp" class="form-text text-muted">
-                        <% if(locals.errors && errors.end) { %>
-                            <span class="alert-danger"><%= errors.end.msg %></span>
+                        <% if(locals.errors && errors["end-date"]) { %>
+                            <span class="alert-danger"><%= errors["end-date"].msg %></span>
                         <% } %>
                     </small>
                 </div>
@@ -62,7 +66,8 @@
             <!-- Monto -->
             <label for="price">Monto:</label>
             <div class="form-row input-group mb-3">
-                <input type="text" class="form-control" id="price" aria-label="Monto" aria-describedby="priceHelp">
+                <input type="text" class="form-control" id="price" name="price" aria-label="Monto" aria-describedby="priceHelp"
+                    value="<%= locals.userInput && userInput.price ? userInput.price : '' %>">
                 <div class="input-group-append">
                     <span class="input-group-text">$</span>
                     <span class="input-group-text">0.00</span>
@@ -80,7 +85,7 @@
                     <span class="input-group-text">Documentos de texto</span>
                 </div>
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="doc" aria-describedby="docHelp">
+                    <input type="file" class="custom-file-input" id="doc" name="doc" aria-describedby="docHelp">
                     <!-- Información del archivo desde el script -->
                     <label class="custom-file-label" for="doc">Elegir archivo</label>
                 </div>
@@ -101,7 +106,7 @@
                     <span class="input-group-text">Imágenes</span>
                 </div>
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="images" aria-describedby="imagesHelp" multiple>
+                    <input type="file" class="custom-file-input" id="images" name="images" aria-describedby="imagesHelp" multiple>
                     <!-- Información de las imágenes desde el script -->
                     <label class="custom-file-label" for="images">Elegir Imágenes</label>
                 </div>

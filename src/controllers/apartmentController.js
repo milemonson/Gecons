@@ -1,3 +1,4 @@
+const { validationResult } = require("express-validator");
 const { Building, Apartment } = require("../database/models");
 
 module.exports = {
@@ -26,7 +27,22 @@ module.exports = {
 
     /** Procesamiento de la vista de creación */
     store : (req, res) => {
+
+        let errors = validationResult(req);
         
+        if(errors.isEmpty()){
+            res.send("UwW ;D");
+        } else {
+            res.render("admin/addApartment", {
+                errors : errors.mapped(),
+                userInput : req.body,
+                building : { 
+                    name : req.body.buildingName,
+                    id : req.body.buildingId
+                }
+            })
+        }
+
     },
 
     /** Vista de edición */
