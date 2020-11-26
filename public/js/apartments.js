@@ -29,6 +29,72 @@ window.addEventListener("load", function(){
         });
     }
 
+    function loadTable(page){
+        let buildingId = buildingSelect.value;
+
+        if(buildingId != ""){
+            tableBody.innerHTML = ""; // Vaciado de la tabla
+
+            apiCall(`/api/apartments/list?page=${page}&b=${buildingId}`, (result) => {
+                let content = "";
+
+                result.data.forEach(element => {
+                    content += 
+                        `<tr>
+                            <th>${element.name}</th>
+                            <td>${element.initDate}</td>
+                            <td>${element.endDate}</td>
+                            <td>${element.price}</td>
+                            <td>
+                                <a href="/admin/apartments/${element.id}/edit">
+                                    <i class="fas fa-edit"></i>
+                                <a>
+                            </td>
+                            <td data-id="${element.id}">
+                                <i class="fas fa-trash-alt"></i>
+                            </td>
+                        </tr>`;
+                });
+
+                tableBody.innerHTML = content;
+            });
+        }
+    }
+
+    function buildPagination(buildingId){ // Armado del paginado
+        apiCall(`/api/apartments/pages?b=${buildingId}`, (result) => {
+            if(result.meta.count > 1){
+                let content =  "";
+
+                for(let i = 1; i <= result.meta.count; i++){
+                    content += `<li class="page-item ${i == 1 ? 'active' : ''}">
+                                    <a class="page-link" href="#" id="tab-${i}"">
+                                        ${i}
+                                    </a>
+                                </li>`;
+                }
+
+                pagination.innerHTML = content;
+
+                // Suscripción a eventos de cambio de página
+                document.querySelectorAll("a.page-link").forEach(link => {
+                    link.addEventListener("click", function(e){
+                        e.preventDefault();
+                        let tab = Number(this.innerHTML); // Número de la página
+
+                        if(currentPage != tab){
+                            document.getElementById(`tab-${currentPage}`).parentElement.classList.toggle("active")
+                            this.parentElement.classList.toggle("active");
+
+                            currentPage = tab;
+                            loadTable(tab);
+                        }
+                    })
+                });
+            } else pagination.innerHTML = "";
+        });
+    }
+
     // *********** Suscripción a eventos ***********
     addApartment.addEventListener("click", () => {
         if(buildingSelect.value != ""){
@@ -36,6 +102,13 @@ window.addEventListener("load", function(){
         }
         // TODO : Dar un aviso visual al seleccionar el primero
     });
+
+    buildingSelect.addEventListener("change", function(){
+        currentPage = 1;
+        loadTable(1);
+        buildPagination(this.value);
+
+    })
 
     // *********** Construcción de la página ***********
     buildSelect();
