@@ -9,6 +9,7 @@ const apartmentRoutes = require("./src/routes/apartmentRoutes");
 
 // ********** Rutas de la API **********
 const apiBuildingRoutes = require("./src/routes/api/buildingRoutes");
+const apiApartmentRoutes = require("./src/routes/api/apartmentRoutes");
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use("/admin/apartments", apartmentRoutes);
 
 // ********** Entrada a la API **********
 app.use("/api/buildings", apiBuildingRoutes);
+app.use("/api/apartments", apiApartmentRoutes);
 
 // ********** Creación de las carpetas para el guardado de archivos **********
 let docsFolder = path.join(__dirname, "docs"); // Documentos descargables
