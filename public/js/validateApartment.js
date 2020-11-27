@@ -6,6 +6,8 @@ window.addEventListener("load", function(){
     const name = document.getElementById("name");
     const description = document.getElementById("description");
     const price = document.getElementById("price");
+    const doc = document.getElementById("doc");
+    const images = document.getElementById("images");
     const form = document.querySelector("form");
 
     // *********** Utilidades ***********
@@ -60,6 +62,23 @@ window.addEventListener("load", function(){
         validatePrice();
 
         if(Object.keys(errors).length) event.preventDefault(); // Cancelación del evento
+    });
+
+    // Feedback visual de las imágenes selectas
+    images.addEventListener("change", function(){
+        let msg = "";
+
+        if(this.files.length > 1){
+            msg = this.files.length + " archivos seleccionados."
+        } else {
+            msg = this.files[0].name;
+        }
+
+        this.nextElementSibling.innerHTML = msg;
+    });
+
+    doc.addEventListener("change", function(){
+        this.nextElementSibling.innerHTML = this.files[0].name;
     });
 
 });
