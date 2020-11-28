@@ -35,9 +35,11 @@ app.use("/api/apartments", apiApartmentRoutes);
 
 // ********** Creación de las carpetas para el guardado de archivos **********
 let docsFolder = path.join(__dirname, "docs"); // Documentos descargables
+let tempFolder = path.join(__dirname, "temp"); // Carpeta de archivos temporales
 let imagesFolder = path.join(__dirname, "public", "img", "uploaded"); // Imágenes subidas
 
 if(!fs.existsSync(docsFolder)) fs.mkdirSync(docsFolder);
+if(!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder);
 if(!fs.existsSync(imagesFolder)) fs.mkdirSync(imagesFolder);
 
 // ********** Ejecución del servidor **********
