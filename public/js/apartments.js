@@ -15,7 +15,7 @@ window.addEventListener("load", function(){
             .then(result => callback(result));
     }
 
-    function buildSelect(){ 
+    function buildSelect(){ // Creación del selector de edificios
         apiCall("/api/buildings/all", result => {
             let content = "";
 
@@ -29,7 +29,7 @@ window.addEventListener("load", function(){
         });
     }
 
-    function loadTable(page){
+    function loadTable(page){ // Armado de la tabla
         let buildingId = buildingSelect.value;
 
         if(buildingId != ""){
@@ -57,8 +57,24 @@ window.addEventListener("load", function(){
                 });
 
                 tableBody.innerHTML = content;
+
+                // Suscripción a eventos de los botones de borrado
+                for(row of tableBody.children){
+                    let lastCol = row.children.item(row.children.length - 1);
+                    
+                    lastCol.addEventListener("click", () => deleteApartment(lastCol.dataset.id));
+                }
             });
         }
+    }
+
+    function deleteApartment(id){ // Borrado AJAX del departamento
+        // TODO : Mostrar algún tipo de popup de confirmación
+        // TODO : Que el paginado reaccione al cambio de elementos
+        fetch(`/api/apartments/delete/${id}`, { method : "DELETE" })
+            .then(response => {
+                loadTable(currentPage);
+            });
     }
 
     function buildPagination(buildingId){ // Armado del paginado
