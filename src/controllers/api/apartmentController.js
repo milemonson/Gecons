@@ -1,9 +1,13 @@
 /**
  * CRUD para el endpoint de la API HTTP encargado de las operaciones relacionadas a la entidad Apartment.
  */
+const fs = require("fs");
+const path = require("path");
+const { Apartment, Building, Image, sequelize } = require("../../database/models");
 
-const { Apartment } = require("../../database/models");
 const LIMIT_PER_PAGE = 10;
+const DOCS_DIRECTORY = path.join(__dirname, "..", "..", "..", "docs");
+const IMG_DIRECTORY = path.join(__dirname, "..", "..", "..", "public", "img", "uploaded");
 
 module.exports = {
 
@@ -84,25 +88,47 @@ module.exports = {
     /**
      * Borra un registro en la base de datos teniendo en cuenta sus asociaciones.
      */
-    delete : (req, res) => {
-
-        // TODO : Destruir carpetas, imágenes, etc...
-        Apartment.destroy({ where :{ id : Number(req.params.id) } })
-            .then(() => {
-                res.status(204).json();
+    delete : async (req, res) => {
+        
+        let namesQuery = await Apartment.findOne({ // Nombres para el borrado de carpetas
+            attributes : ["name"],
+            include : {
+                model : Building,
+                attributes : ["name"]
             },
-            // Rechazo de la creación
-            reject => {throw new Error(reject)})
-            .catch(error => {
-                console.log(error);
-                // TODO : encontrar una forma más específica de informar el error....
-                res.status(500).json({
-                    meta : {
-                        status : 500,
-                        statusMsg : "Internal server error"
-                    }
-                });
+            where : { id : Number(req.params.id) }
+        });
+
+        try {
+            
+            await sequelize.transaction(async (t) => { // Transacciones a BD
+                await Image.destroy({
+                    where : { apartmentId : Number(req.params.id) },
+                }, { transaction : t });
+
+                await Apartment.destroy({ 
+                    where : { id : Number(req.params.id) }
+                }, { transaction : t });
             });
+
+            // Borrado de los archivos asociados al departamento, si la
+            // transacción se ejecutó correctamente, 
+            fs.rmdirSync(path.join(DOCS_DIRECTORY, namesQuery.Building.name, namesQuery.name), 
+                        {recursive : true});
+            fs.rmdirSync(path.join(IMG_DIRECTORY, namesQuery.Building.name, namesQuery.name), 
+                        {recursive : true});
+
+            res.status(204).json();
+
+        } catch (error) {
+            // El Rollback es automático..
+            res.status(500).json({
+                meta : {
+                    status : 500,
+                    statusMsg : "Internal server error"
+                }
+            });
+        }
     }
 
 }
