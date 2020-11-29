@@ -1,9 +1,13 @@
 /**
  * CRUD para el endpoint de la API HTTP encargado de las operaciones relacionadas a la entidad Building.
  */
-
+const fs = require("fs");
+const path  = require("path");
 const { Building, Apartment } = require("../../database/models");
+
 const LIMIT_PER_PAGE = 10;
+const DOCS_DIRECTORY = path.join(__dirname, ".." , "..", "..", "docs");
+const IMG_DIRECTORY = path.join(__dirname, ".." , "..", "..", "public", "img");
 
 module.exports = {
 
