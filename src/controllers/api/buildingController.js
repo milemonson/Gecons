@@ -3,11 +3,11 @@
  */
 const fs = require("fs");
 const path  = require("path");
-const { Building, Apartment } = require("../../database/models");
+const { Building, Apartment, Image, sequelize } = require("../../database/models");
 
 const LIMIT_PER_PAGE = 10;
 const DOCS_DIRECTORY = path.join(__dirname, ".." , "..", "..", "docs");
-const IMG_DIRECTORY = path.join(__dirname, ".." , "..", "..", "public", "img");
+const IMG_DIRECTORY = path.join(__dirname, ".." , "..", "..", "public", "img", "uploaded");
 
 module.exports = {
 
@@ -116,27 +116,59 @@ module.exports = {
     /**
      * Borra un registro en la base de datos teniendo en cuenta sus asociaciones.
      */
-    delete : (req, res) => {
+    delete : async (req, res) => {
 
-        // Destroy provisional: En un futuro va a haber que tener en cuenta todos
-        // los registros asociados a el edificio y borrarlos en una sola transacción...
-        Building.destroy({ where :{ id : Number(req.params.id) } })
-            .then(() => {
-                res.status(204).json();
-            },
-            // Rechazo de la creación
-            reject => {throw new Error(reject)})
-            .catch(error => {
-                console.log(error);
-                // TODO : encontrar una forma más específica de informar el error....
-                res.status(500).json({
-                    meta : {
-                        status : 500,
-                        statusMsg : "Internal server error"
-                    }
-                });
+        let apartmentIDs; // IDs de los departamentos para el borrado de imágenes
+        const buildingId = Number(req.params.id);
+
+        let toDelete = await Building.findByPk(
+            buildingId, {
+                attributes : ["name"],
+                include : {
+                    model : Apartment,
+                    attributes : ["id"]
+                }
+            }
+        );
+
+        if(toDelete.Apartments.length != 0){
+            apartmentIDs = toDelete.Apartments.map(value => {
+                return value.id;
+            });
+        }
+
+        try {
+            // Transacción en cascada para borrar todos los registros asociados al edificio
+            await sequelize.transaction(async (t) => {
+                if(apartmentIDs){
+                    await Image.destroy({
+                        where : { apartmentId : apartmentIDs }
+                    }, { transaction : t });
+                }
+
+                await Apartment.destroy({
+                    where : { buildingId : buildingId }
+                }, { transaction : t });
+
+                await Building.destroy({
+                    where : { id : buildingId }
+                }, { transaction : t });
             });
 
+            // Borrado recursivo de las carpetas asociadas
+            fs.rmdirSync(path.join(DOCS_DIRECTORY, toDelete.name), { recursive : true });
+            fs.rmdirSync(path.join(IMG_DIRECTORY, toDelete.name), { recursive : true });
+
+            res.status(204).json();
+
+        } catch (error) {
+            res.status(500).json({
+                meta : {
+                    status : 500,
+                    statusMsg : "Internal server error"
+                }
+            });
+        }
     }
 
 }
