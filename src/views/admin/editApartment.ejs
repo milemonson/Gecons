@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+
+    <%- include("../partials/head", { title : "Dashboard - Añadir departamento"}) %>
+
+<body>
+    
+    <div class="container">
+
+        <%- include("../partials/tabs", { active : 2 }) %>
+        
+        <h2>Editando el departamento: <%= apartment.name %>, en <%= apartment.Building.name %></h2>
+
+        <form action="/admin/apartments/<%= apartment.id %>/edit" method="POST" enctype="multipart/form-data">
+
+            <!-- Nombre -->
+            <div class="form-group">
+                <label for="name">Nombre del departamento:</label>
+                <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp"
+                    value="<%= locals.apartment && apartment.name ? apartment.name : '' %>">
+                <small id="nameHelp" class="form-text text-muted">
+                    Máx 255 caracteres, campo obligatório.
+                    <% if(locals.errors && errors.name) { %>
+                        <span class="alert-danger"><%= errors.name.msg %></span>
+                    <% } %>
+                </small>
+            </div>
+
+            <!-- Descripción -->
+            <div class="form-group">
+                <label for="description">Descripción:</label>
+                <textarea class="form-control" id="description" name="description" rows="3" aria-describedby="descHelp"
+                    value="<%= locals.userInput && userInput.description ? userInput.description : ( locals.apartment && apartment.description ? apartment.description : '' ) %>">
+                </textarea>
+                <small id="nameHelp" class="form-text text-muted">
+                    Campo opcional. Máximo 500 caracteres.
+                    <% if(locals.errors && errors.description) { %>
+                        <span class="alert-danger"><%= errors.description.msg %></span>
+                    <% } %>
+                </small>
+            </div>
+
+            <!-- Fechas de inicio y fin -->
+            <div class="form-row justify-content-around">
+                <div class="form-group">
+                    <label for="init-date">Fecha de inicio:</label>
+                    <input class="form-control" type="date" id="init-date" name="init-date" aria-describedby="initHelp"
+                        value="<%= locals.apartment && apartment.initDate ? apartment.initDate : '' %>">
+                    <small id="initHelp" class="form-text text-muted">
+                        <% if(locals.errors && errors["init-date"]) { %>
+                            <span class="alert-danger"><%= errors["init-date"].msg %></span>
+                        <% } %>
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label for="end-date">Fecha de finalización:</label>
+                    <input class="form-control" type="date" id="end-date" name="end-date" aria-describedby="endHelp"
+                        value="<%= locals.apartment && apartment.endDate ? apartment.endDate : '' %>">
+                    <small id="endHelp" class="form-text text-muted">
+                        <% if(locals.errors && errors["end-date"]) { %>
+                            <span class="alert-danger"><%= errors["end-date"].msg %></span>
+                        <% } %>
+                    </small>
+                </div>
+            </div>
+
+            <!-- Monto -->
+            <label for="price">Monto:</label>
+            <div class="form-row input-group mb-3">
+                <input type="text" class="form-control" id="price" name="price" aria-label="Monto" aria-describedby="priceHelp"
+                    value="<%= locals.apartment && apartment.price ? apartment.price : '' %>">
+                <div class="input-group-append">
+                    <span class="input-group-text">$</span>
+                    <span class="input-group-text">0.00</span>
+                </div>
+            </div>
+            <small id="priceHelp" class="form-text text-muted">
+                <% if(locals.errors && errors.price) { %>
+                    <span class="alert-danger"><%= errors.price.msg %></span>
+                <% } %>
+            </small>
+
+            <!-- Reemplazo y  descarga de documentos -->
+            <div class="form-row input-group mt-3 mb-3">
+                <%# En caso de que el departamento ya tenga un documento asociado %>
+                <% if(locals.apartment && apartment.documentUrl) { %>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            Cambiar el documento
+                        </span>
+                    </div>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="download-document">
+                            <i class="fas fa-download"></i>
+                        </span>
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="doc" name="doc" aria-describedby="docHelp">
+                        <!-- Información del archivo desde el script -->
+                        <label class="custom-file-label" for="doc">
+                            <%= apartment.documentUrl %>
+                        </label>
+                    </div>
+                    
+                <% } else { %>
+
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            Documento de texto
+                        </span>
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="doc" name="doc" aria-describedby="docHelp">
+                        <!-- Información del archivo desde el script -->
+                        <label class="custom-file-label" for="doc">
+                            Elegir archivo
+                        </label>
+                    </div>
+
+                <% } %>
+
+            </div>
+            <small id="docHelp" class="form-text text-muted">
+                <% if(locals.errors && errors.doc) { %>
+                    <span class="alert-danger"><%= errors.doc.msg %></span>
+                <% } %>
+            </small>
+
+            <!-- TODO : Muestra de las imágenes y opción de borrado -->
+
+            <!-- Subida de imágenes -->
+            <!-- 
+                A futuro se puede reemplazar con "bootstrap-fileinput", PERO hay que aprender a usarlo primero
+                https://plugins.krajee.com/file-input
+             -->
+            <div class="form-row input-group mt-3 mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Agregar imágenes</span>
+                </div>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="images" name="images" aria-describedby="imagesHelp" multiple>
+                    <!-- Información de las imágenes desde el script -->
+                    <label class="custom-file-label" for="images">
+                        <%= apartment.Images.length != 0 ? (apartment.Images.length + " archivo(s) seleccionado(s)") : "Elegir Imágenes" %>
+                    </label>
+                </div>
+            </div>
+            <small id="docHelp" class="form-text text-muted">
+                <% if(locals.errors && errors.images) { %>
+                    <span class="alert-danger"><%= errors.images.msg %></span>
+                <% } %>
+            </small>
+
+            <input type="hidden" name="buildingName" value="<%= apartment.Building.name %>">
+            <input type="hidden" name="buildingId" value="<%= apartment.Building.id %>">
+
+            <!-- Botones -->
+            <div class="form-row justify-content-around">
+                <button class="btn btn-primary" type="submit">Enviar</button>
+                <button class="btn btn-primary" type="reset">Resetear</button>
+            </div>
+
+        </form>
+
+    </div>
+
+    <script src="/js/validateApartment.js"></script>
+
+</body>
+</html>

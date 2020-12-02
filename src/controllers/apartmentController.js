@@ -117,6 +117,24 @@ module.exports = {
     /** Vista de edición */
     edit : (req, res) => {
 
+        Apartment.findByPk(Number(req.params.id), {
+            include : [
+                {
+                    model : Image,
+                    attributes : ["url"]
+                },
+                {
+                    model : Building,
+                    attributes : ["id", "name"]
+                }
+            ]
+        })
+            .then(result => {
+                res.render("admin/editApartment", {
+                    apartment : result
+                });
+            });
+
     },
 
     /** Procesamiento de la vista de edición */
