@@ -86,37 +86,49 @@ module.exports = {
     },
 
     /**
+     * Descarga del documento asociado 
+     */
+    downloadDocument : (req, res) => {
+        // TODO : Resolver la descarga del documento
+    },
+
+    /**
      * Borra un registro en la base de datos teniendo en cuenta sus asociaciones.
      */
     delete : async (req, res) => {
-        
-        let namesQuery = await Apartment.findOne({ // Nombres para el borrado de carpetas
-            attributes : ["name"],
-            include : {
-                model : Building,
-                attributes : ["name"]
-            },
-            where : { id : Number(req.params.id) }
-        });
+        let id = Number(req.params.id);
 
+        
         try {
             
-            await sequelize.transaction(async (t) => { // Transacciones a BD
-                await Image.destroy({
-                    where : { apartmentId : Number(req.params.id) },
-                }, { transaction : t });
-
-                await Apartment.destroy({ 
-                    where : { id : Number(req.params.id) }
-                }, { transaction : t });
+            let documentToDelete = await Apartment.findByPk(id, {
+                attributes : ["documentUrl"]
             });
 
-            // Borrado de los archivos asociados al departamento, si la
-            // transacción se ejecutó correctamente, 
-            fs.rmdirSync(path.join(DOCS_DIRECTORY, namesQuery.Building.name, namesQuery.name), 
-                        {recursive : true});
-            fs.rmdirSync(path.join(IMG_DIRECTORY, namesQuery.Building.name, namesQuery.name), 
-                        {recursive : true});
+            let imagesToDelete = await Image.findAll({ 
+                where : { apartmentId : id }
+            });
+
+            await sequelize.transaction(async (t) => { // Transacciones a BD
+                await Image.destroy({
+                    where : { apartmentId : id },
+                }, { transaction : t });
+                
+                await Apartment.destroy({ 
+                    where : { id : id }
+                }, { transaction : t });
+            });
+            
+            // Si se llega a ejecutar esta sección, significa que la transacción fue exitosa
+            if(documentToDelete.documentUrl){ // Borrado del documento asociado al depto
+                fs.unlinkSync(path.join(DOCS_DIRECTORY, documentToDelete.documentUrl));
+            }
+
+            if(imagesToDelete.length){ // Borrado de las imágenes del disco
+                imagesToDelete.forEach(element => {
+                    fs.unlinkSync(path.join(IMG_DIRECTORY, element.url));
+                });
+            }
 
             res.status(204).json();
 

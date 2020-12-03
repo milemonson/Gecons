@@ -1,12 +1,12 @@
 const fs = require("fs");
 const path = require("path");
 const bcrypt = require("bcryptjs");
-const { validationResult, Result } = require("express-validator");
+const { validationResult } = require("express-validator");
 const { Building } = require("../database/models");
 
 const DOCS_DIRECTORY = path.join(__dirname, "..", "..", "docs");
 const IMG_DIRECTORY = path.join(__dirname, "..", "..", "public", "img", "uploaded");
-const NUMBER_OF_SALT = 12;
+const SALT_NUMBER = 12;
 
 module.exports = {
 
@@ -28,16 +28,12 @@ module.exports = {
             
             let newBuilding = {
                 name : req.body.name,
-                password : bcrypt.hashSync(req.body.password, NUMBER_OF_SALT)
+                password : bcrypt.hashSync(req.body.password, SALT_NUMBER)
             }
 
             Building.create(newBuilding)
                 // TODO : Procesar el mail
-                .then(created => {
-                    // Creación de las carpetas para subida de documentos e imágenes
-                    fs.mkdirSync(path.join(DOCS_DIRECTORY, created.name));
-                    fs.mkdirSync(path.join(IMG_DIRECTORY, created.name));
-
+                .then(() => {
                     res.redirect("/admin/buildings");
                 });
                 // TODO : Atajar el error
@@ -71,32 +67,20 @@ module.exports = {
         let errors = validationResult(req);
 
         if(errors.isEmpty()){
-            // TODO : Revisar el cambio de contraseñas, no se debería cambiar
-            // en caso de que no se ingrese nada...
             let updated = { name : req.body.name }
 
             if(req.body.password && req.body.password != ""){
-                updated.password = bcrypt.hashSync(req.body.password, NUMBER_OF_SALT);
+                updated.password = bcrypt.hashSync(req.body.password, SALT_NUMBER);
             }
 
             // TODO : Procesar el mail
-            Building.findByPk(Number(req.params.id), { attributes : ["name"] })
-                .then(result => {
-                    // Renombramiento de las carpetas de archivos
-                    if(result.name != updated.date){
-                        // Documentos
-                        fs.renameSync(path.join(DOCS_DIRECTORY, result.name),
-                                      path.join(DOCS_DIRECTORY, updated.name));
-                        // Imágenes 
-                        fs.renameSync(path.join(IMG_DIRECTORY, result.name),
-                                      path.join(IMG_DIRECTORY, updated.name));
-                    }
-                    
-                    return Building.update(updated, { where : { "id" : req.params.id } });
-                })
+            Building.update(updated, { 
+                where : { "id" : req.params.id } 
+            })
                 .then(() => {
                     res.redirect("/admin/buildings");
-                });
+                })
+                // TODO : Atajar el error
         } else {
 
             Building.findByPk(req.params.id, {attributes : ["id", "name"]})

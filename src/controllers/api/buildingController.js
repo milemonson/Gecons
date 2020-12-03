@@ -119,20 +119,33 @@ module.exports = {
     delete : async (req, res) => {
 
         let apartmentIDs; // IDs de los departamentos para el borrado de imágenes
+        let imagesToDelete = [];
+        let documentsToDelete = [];
         const buildingId = Number(req.params.id);
 
-        let toDelete = await Building.findByPk(
-            buildingId, {
-                attributes : ["name"],
-                include : {
-                    model : Apartment,
-                    attributes : ["id"]
-                }
+        let apartmentsToDelete = await Apartment.findAll({
+            attributes : ["id", "documentUrl"],
+            include : {
+                model : Image,
+                attributes : ["url"]
+            },
+            where : {
+                buildingId : buildingId
             }
-        );
+        });
 
-        if(toDelete.Apartments.length != 0){
-            apartmentIDs = toDelete.Apartments.map(value => {
+        if(apartmentsToDelete.length){
+            apartmentIDs = apartmentsToDelete.map(value => {
+                if(value.documentUrl){ // Nombre del documento para su borrado en disco
+                    documentsToDelete.push(value.documentUrl);
+                }
+
+                if(value.Images.length){ // Nombre de las imágenes para su borrado en disco
+                    value.Images.forEach(img => {
+                        imagesToDelete.push(img.url);
+                    });
+                }
+
                 return value.id;
             });
         }
@@ -155,9 +168,17 @@ module.exports = {
                 }, { transaction : t });
             });
 
-            // Borrado recursivo de las carpetas asociadas
-            fs.rmdirSync(path.join(DOCS_DIRECTORY, toDelete.name), { recursive : true });
-            fs.rmdirSync(path.join(IMG_DIRECTORY, toDelete.name), { recursive : true });
+            // Si se llega a ejecutar esta sección, significa que la transacción fue exitosa
+            if(documentsToDelete.length){
+                documentsToDelete.forEach(doc => {
+                    fs.unlinkSync(path.join(DOCS_DIRECTORY, doc));
+                });
+            }
+            if(imagesToDelete.length){
+                imagesToDelete.forEach(img => {
+                    fs.unlinkSync(path.join(IMG_DIRECTORY, img));
+                });
+            }
 
             res.status(204).json();
 

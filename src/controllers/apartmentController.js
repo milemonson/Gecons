@@ -50,22 +50,15 @@ module.exports = {
                 newApartment.description = req.body.description;
             if(req.files && req.files.doc)
                 newApartment.documentUrl = req.files.doc[0].filename;
-
-            // Directorios de los archivos
-            let docsPath = path.join(DOCS_DIRECTORY, req.body.buildingName, req.body.name);
-            let imgPath = path.join(IMG_DIRECTORY, req.body.buildingName, req.body.name);
             
             Apartment.create(newApartment)
                 .then(created => {
-
-                    fs.mkdirSync(docsPath);
-                    fs.mkdirSync(imgPath);
 
                     // Movida de la carpeta temporal a la nueva carpeta
                     if(created.documentUrl){
                         fs.renameSync(
                             path.join(tempFilesDir, "docs", created.documentUrl),
-                            path.join(docsPath, created.documentUrl)
+                            path.join(DOCS_DIRECTORY, created.documentUrl)
                         );
                     }
                     
@@ -90,7 +83,7 @@ module.exports = {
                         results.forEach(image => {
                             fs.renameSync(
                                 path.join(tempFilesDir, "img", image.url),
-                                path.join(imgPath, image.url)
+                                path.join(IMG_DIRECTORY, image.url)
                             );
                         });
                     }
@@ -98,7 +91,6 @@ module.exports = {
                     fs.rmdirSync(tempFilesDir, { recursive : true }); // Borrado de la carpeta temporal
                     res.redirect("/admin/apartments");
                 });
-                // TODO : Atajar los errores de acceso a datos
             
         } else { // En caso de errores, se descartan los archivos de la carpeta temporal
             fs.rmdirSync(tempFilesDir, { recursive : true });
