@@ -11,7 +11,7 @@
         
         <h2>Editando el departamento: <%= apartment.name %>, en <%= apartment.Building.name %></h2>
 
-        <form action="/admin/apartments/<%= apartment.id %>/edit" method="POST" enctype="multipart/form-data">
+        <form action="/admin/apartments/<%= apartment.id %>/edit?_method=PUT" method="POST" enctype="multipart/form-data">
 
             <!-- Nombre -->
             <div class="form-group">
@@ -141,7 +141,7 @@
                     <input type="file" class="custom-file-input" id="images" name="images" aria-describedby="imagesHelp" multiple>
                     <!-- Información de las imágenes desde el script -->
                     <label class="custom-file-label" for="images">
-                        <%= apartment.Images.length != 0 ? (apartment.Images.length + " archivo(s) seleccionado(s)") : "Elegir Imágenes" %>
+                        <%= apartment.Images.length != 0 ? (apartment.Images.length + " archivo(s) subido(s)") : "Elegir Imágenes" %>
                     </label>
                 </div>
             </div>

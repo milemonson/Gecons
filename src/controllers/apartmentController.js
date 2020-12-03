@@ -131,7 +131,81 @@ module.exports = {
 
     /** Procesamiento de la vista de edición */
     update : (req, res) => {
-        
-    }
+        // TODO : Integrar el borrado de imágenes
+        let errors = validationResult(req);
+
+        if(errors.isEmpty()){
+
+            let updated = {
+                name : req.body.name,
+                price : Number(req.body.price),
+                initDate : req.body["init-date"],
+                endDate : req.body["end-date"]
+            }
+
+            // Campos opcionales
+            if(req.body.description != "")
+                updated.description = req.body.description;
+            if(req.files && req.files.doc)
+                updated.documentUrl = req.files.doc[0].filename;
+            
+            Apartment.update(updated, {
+                where : { id : Number(req.params.id) }
+            })
+                .then(() => {
+                    // En caso de subida de imágenes
+                    if(req.files && req.files.images){
+                        let imagePromises = [];
+
+                        req.files.images.forEach(element => {
+                            imagePromises.push(Image.create({ 
+                                url : element.filename,
+                                apartmentId : created.id
+                            }));
+                        });
+
+                        return Promise.all(imagePromises);
+                    } else 
+                        return Promise.resolve(false);
+                })
+                .then(results => {
+                    if(results){
+                        results.forEach(image => {
+                            fs.renameSync(
+                                path.join(tempFilesDir, "img", image.url),
+                                path.join(IMG_DIRECTORY, image.url)
+                            );
+                        });
+                    }
+
+                    fs.rmdirSync(tempFilesDir, { recursive : true }); // Borrado de la carpeta temporal
+                    res.redirect("/admin/apartments");
+                });
+
+        } else {
+            // TODO : Borrar los archivos temporales en caso de que se produzcan errores
+            Apartment.findByPk(Number(req.params.id),{
+                include : [
+                    {
+                        model : Image,
+                        attributes : ["url"]
+                    },
+                    {
+                        model : Building,
+                        attributes : ["id", "name"]
+                    }
+                ]
+            })
+                .then(result => {
+                    res.render("admin/editApartment",{
+                        apartment : result,
+                        errors : errors.mapped(),
+                        userInput : {
+                            description : req.body.description
+                        }
+                    });
+                });
+        }
+    } // Fin update
 
 }

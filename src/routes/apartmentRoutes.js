@@ -4,6 +4,7 @@ const multer = require("multer");
 const multerOpts = require("../utils/multerOpts");
 const controller = require("../controllers/apartmentController");
 const createApartmentValidator = require("../validators/createApartmentValidator");
+const editApartmentValidator = require("../validators/editApartmentValidator");
 
 const upload = multer(multerOpts);
 
@@ -18,6 +19,8 @@ router.post("/add", upload.fields([{ name : "doc" }, { name : "images" }]),
 
 // Edición
 router.get("/:id/edit", controller.edit);
-router.put("/:id/edit", controller.update);
+router.put("/:id/edit", upload.fields([{ name : "doc" }, { name : "images" }]), 
+            editApartmentValidator,
+            controller.update);
 
 module.exports = router;
