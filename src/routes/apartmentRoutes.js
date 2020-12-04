@@ -23,4 +23,7 @@ router.put("/:id/edit", upload.fields([{ name : "doc" }, { name : "images" }]),
             editApartmentValidator,
             controller.update);
 
+// Descarga de documentos
+router.get("/download/:doc", controller.download);
+
 module.exports = router;

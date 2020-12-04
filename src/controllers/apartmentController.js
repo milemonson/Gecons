@@ -206,6 +206,13 @@ module.exports = {
                     });
                 });
         }
-    } // Fin update
+    },
+
+    /**
+     * Descarga del documento asociado 
+     */
+    download : (req, res) => {
+        res.download(path.join(DOCS_DIRECTORY, req.params.doc), req.params.doc);
+    }
 
 }

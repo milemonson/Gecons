@@ -86,13 +86,6 @@ module.exports = {
     },
 
     /**
-     * Descarga del documento asociado 
-     */
-    downloadDocument : (req, res) => {
-        // TODO : Resolver la descarga del documento
-    },
-
-    /**
      * Borra un registro en la base de datos teniendo en cuenta sus asociaciones.
      */
     delete : async (req, res) => {

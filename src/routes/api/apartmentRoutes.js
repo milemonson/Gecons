@@ -6,8 +6,6 @@ router.get("/list", controller.listAll);
 
 router.get("/pages", controller.getPages);
 
-router.get("/download/:id", controller.downloadDocument);
-
 router.delete("/delete/:id", controller.delete);
 
 module.exports = router;
