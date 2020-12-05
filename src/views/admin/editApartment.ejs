@@ -129,6 +129,24 @@
             </small>
 
             <!-- TODO : Muestra de las imágenes y opción de borrado -->
+            <% if(apartment.Images.length){ %>
+                <label for="img-shower">Imágenes subidas:</label>
+                <div class="form-row container border border-secondary rounded"
+                    style="display: flex; justify-content: space-around;"
+                    id="img-shower" aria-describedby="uploadedHelp">
+                    <% apartment.Images.forEach(img => { %>
+                        <img src="/img/uploaded/<%= img.url %>" alt="Imagen del departamento"
+                        style="width: 30%; border-radius: 2%;" data-url="<%= img.url %>">
+                    <% }); %>
+                </div>
+                <input type="hidden" id="img-selected" name="img-selected">
+                <small id="uploadedHelp" class="form-text text-muted">
+                    Seleccione las imágenes que desée borrar.
+                    <% if(locals.errors && errors.uploaded) { %>
+                        <span class="alert-danger"><%= errors.uploaded.msg %></span>
+                    <% } %>
+                </small>
+            <% } %> 
 
             <!-- Subida de imágenes -->
             <!-- 

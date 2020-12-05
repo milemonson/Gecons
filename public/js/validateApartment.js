@@ -10,6 +10,10 @@ window.addEventListener("load", function(){
     const images = document.getElementById("images");
     const form = document.querySelector("form");
 
+    // Selector de imágenes
+    const imgShower = document.getElementById("img-shower");
+    const imgSelected = document.getElementById("img-selected");
+
     // *********** Utilidades ***********
     function handleFeedback(element, feedback){ // Remarca los errores
         if(feedback){
@@ -18,6 +22,25 @@ window.addEventListener("load", function(){
         } else {
             element.classList.remove("alert", "alert-danger");
             delete errors[element.name];
+        }
+    }
+
+    function imgSuscriber(shower){ // Suscriptor a eventos de las imágenes
+        for(subElement of shower.children){
+            subElement.addEventListener("click", function(){
+                // TODO : Clarificar esto...
+                if(this.style.border == ""){
+                    this.style.border = "2px solid red";
+                    imgSelected.value += this.dataset.url + ",";
+                } else {
+                    this.style.border = "";
+                    let dataArray = imgSelected.value.split(",");
+                    dataArray = dataArray.filter(element => {
+                        return element != this.dataset.url;
+                    });
+                    imgSelected.value = dataArray.toString();
+                }
+            });
         }
     }
 
@@ -60,6 +83,9 @@ window.addEventListener("load", function(){
         validateName();
         validateDescription();
         validatePrice();
+        // Borrado de la "," residual
+        if(imgSelected && imgSelected.value)
+            imgSelected.value = imgSelected.value.substring(0, imgSelected.value.length - 1);
 
         if(Object.keys(errors).length) event.preventDefault(); // Cancelación del evento
     });
@@ -81,4 +107,5 @@ window.addEventListener("load", function(){
         this.nextElementSibling.innerHTML = this.files[0].name;
     });
 
+    if(imgShower) imgSuscriber(imgShower);
 });

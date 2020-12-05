@@ -133,6 +133,7 @@ module.exports = {
     update : (req, res) => {
         // TODO : Integrar el borrado de imágenes
         let errors = validationResult(req);
+        let tempFilesDir = path.join(TEMP_DIRECTORY, req.body.name);
 
         if(errors.isEmpty()){
 
@@ -160,7 +161,7 @@ module.exports = {
                         req.files.images.forEach(element => {
                             imagePromises.push(Image.create({ 
                                 url : element.filename,
-                                apartmentId : created.id
+                                apartmentId : Number(req.params.id)
                             }));
                         });
 
@@ -179,6 +180,23 @@ module.exports = {
                     }
 
                     fs.rmdirSync(tempFilesDir, { recursive : true }); // Borrado de la carpeta temporal
+                
+                    // Aplicando casi la misma lógica, se resuelve el borrado de imágenes en caso de que se seleccionen
+                    if(req.body["img-selected"]){
+                        let imagePromises = [];
+                        let images = req.body["img-selected"].split(",");
+                        console.log(images);
+                        images.forEach(element => {
+                            imagePromises.push(Image.destroy({ where : { url : element } }));
+                            // Borrado de las imágenes del disco
+                            fs.unlinkSync(path.join(IMG_DIRECTORY, element));
+                        });
+
+                        return Promise.all(imagePromises);
+                    } else 
+                        return Promise.resolve();
+                })
+                .then(() => {
                     res.redirect("/admin/apartments");
                 });
 
