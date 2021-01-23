@@ -1,0 +1,12 @@
+<%# active: El índice de la pestaña activa %>
+<ul class="nav nav-tabs nav-justified">
+    <li class="nav-item">
+      <a class="nav-link <%= active = 0 ? 'active' : '' %>" href="/admin/buildings">Edificios</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= active = 1 ? 'active' : '' %>" href="/admin/buildings/add">Añadir</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= active = 2 ? 'active' : '' %>" href="/admin/apartments">Deptos</a>
+    </li>
+</ul>

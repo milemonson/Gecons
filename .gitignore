@@ -1,0 +1,7 @@
+/node_modules/
+/spec/
+/public/img/uploaded/
+/docs/
+/temp/
+.env
+.sequelizerc
