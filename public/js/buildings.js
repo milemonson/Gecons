@@ -1,8 +1,13 @@
 window.addEventListener("load", function(){
 
     // *********** Recursos ***********
+    const container = document.getElementById("container");
     const tableBody = document.getElementById("table-body");
     const pagination = document.getElementById("pagination");
+    // Spinner de carga
+    const spinner = createSpinner();
+    // Feedback sin resultados
+    const noResults = createNoResults();
 
     let currentPage = 1;
 
@@ -15,24 +20,36 @@ window.addEventListener("load", function(){
 
     // Llenado de la tabla
     function loadTable(page){
+        tableBody.appendChild(spinner);
+
         apiCall(`/api/buildings/list?page=${page}`, (result) => {
             let content = "";
-            tableBody.innerHTML = ""; // Vaciado de la tabla
-            
-            result.data.forEach(element => {
-                content += 
-                    `<tr>
-                        <th>${element.name}</th>
-                        <td>${element.apartments}</td>
-                        <td>
-                            <a href="/admin/buildings/${element.id}/edit">
-                                <i class="fas fa-edit"></i>
-                            <a>
-                        </td>
-                        <td data-id="${element.id}"><i class="fas fa-trash-alt"></i></td>
-                    </tr>`;
-            });
 
+            if(result.meta.count != 0){
+                // Borrado del cartel de "sin resultados"
+                if(container.querySelector("#no-results") != null){
+                    container.removeChild(noResults);
+                }
+
+                result.data.forEach(element => {
+                    content += 
+                        `<tr>
+                            <th>${element.name}</th>
+                            <td>${element.apartments}</td>
+                            <td>
+                                <a href="/admin/buildings/${element.id}/edit">
+                                    <i class="fas fa-edit"></i>
+                                <a>
+                            </td>
+                            <td data-id="${element.id}"><i class="fas fa-trash-alt"></i></td>
+                        </tr>`;
+                });
+            } else {
+                container.appendChild(noResults);
+            }
+
+            // Rellenado de la tabla
+            tableBody.removeChild(spinner);
             tableBody.innerHTML = content;
 
             // Suscripción a eventos de los botones de borrado
@@ -88,6 +105,39 @@ window.addEventListener("load", function(){
                 });
             }
         });
+    }
+
+    // *********** Creación de elementos del DOM ***********
+    function createNoResults(){
+        const noResults = document.createElement("div");
+        noResults.id = "no-results";
+
+        const img = document.createElement("img");
+        img.src = "/img/gecons.png";
+        img.alt = "Logo de Gecons";
+        noResults.appendChild(img);
+
+        const h3 = document.createElement("h3");
+        h3.innerText = "No hubo resultados...";
+        noResults.appendChild(h3);
+
+        return noResults;
+    }
+
+    function createSpinner(){
+        const spinner = document.createElement("div");
+        // Estilos
+        spinner.style.border = "10px solid rgb(111,111,111)";
+        spinner.style.borderTop = "10px solid rgb(17,76,118)";
+        spinner.style.borderRadius = "50%";
+        spinner.style.width = "70px";
+        spinner.style.height = "70px";
+        spinner.style.animation = "spin 2s linear infinite";
+        spinner.style.position = "relative";
+        spinner.style.left = "150%";
+        spinner.style.marginTop = "15px";
+
+        return spinner;
     }
 
     // *********** Carga de la vista ***********
