@@ -5,7 +5,7 @@
 
 <body>
     
-    <div class="container">
+    <div class="container" id="container">
 
         <%- include("../partials/tabs", { active : 2 }) %>
 
@@ -42,7 +42,13 @@
         </nav>
 
     </div>
-
+    <style>
+        /* Animación del spinner */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
     <script src="/js/apartments.js"></script>
 
 </body>

@@ -4,7 +4,7 @@
 <%- include("../partials/head", { title : "Dashboard - Edificios" }) %>
 
 <body>
-    <div class="container">
+    <div class="container" id="container">
 
         <%- include("../partials/tabs", { active : 0 }) %>
 
@@ -12,7 +12,7 @@
             <thead class="thead-dark">
                 <tr>
                   <th scope="col">Edificio</th>
-                  <th scope="col">Cant. Deptos</th>
+                  <th scope="col">Deptos</th>
                   <th scope="col">Editar</th>
                   <th scope="col">Borrar</th>
                 </tr>
@@ -25,6 +25,13 @@
         </nav>
 
     </div>
+    <style>
+        /* Animación del spinner */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
     <script src="/js/buildings.js"></script>
 </body>
 
