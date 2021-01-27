@@ -50,18 +50,14 @@ window.addEventListener("load", function(){
     
                     result.data.forEach(element => {
                         content += 
-                            `<tr>
+                            `<tr class="text-center">
                                 <th>${element.name}</th>
-                                <td>${element.initDate}</td>
-                                <td>${element.endDate}</td>
+                                <td>${element.initDate} <br/> ${element.endDate} </td>
                                 <td>${element.price}</td>
                                 <td>
-                                    <a href="/admin/apartments/${element.id}/edit">
-                                        <i class="fas fa-edit"></i>
+                                    <a href="/admin/apartments/${element.id}">
+                                        <i class="fas fa-eye"></i>
                                     <a>
-                                </td>
-                                <td data-id="${element.id}">
-                                    <i class="fas fa-trash-alt"></i>
                                 </td>
                             </tr>`;
                     });
@@ -129,6 +125,7 @@ window.addEventListener("load", function(){
     // *********** Creación de elementos del DOM ***********
     function createNoResults(){
         const noResults = document.createElement("div");
+        noResults.classList.add("text-center");
         noResults.id = "no-results";
 
         const img = document.createElement("img");

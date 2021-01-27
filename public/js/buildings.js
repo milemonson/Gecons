@@ -110,6 +110,7 @@ window.addEventListener("load", function(){
     // *********** Creación de elementos del DOM ***********
     function createNoResults(){
         const noResults = document.createElement("div");
+        noResults.classList.add("text-center");
         noResults.id = "no-results";
 
         const img = document.createElement("img");
