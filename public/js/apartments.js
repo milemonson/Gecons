@@ -9,6 +9,7 @@ window.addEventListener("load", function(){
 
     const spinner = createSpinner();
     const noResults = createNoResults();
+    const selectABuilding = createSelectABuilding();
 
     let currentPage = 0;
 
@@ -36,7 +37,12 @@ window.addEventListener("load", function(){
     function loadTable(page){ // Armado de la tabla
         let buildingId = buildingSelect.value;
 
-        if(buildingId != ""){
+        if(buildingId != "") {
+            // Borrado del cartel de "seleccione un edificio"
+            if(container.querySelector("#select-a-building") != null){
+                container.removeChild(selectABuilding);
+            }
+
             tableBody.appendChild(spinner);
 
             apiCall(`/api/apartments/list?page=${page}&b=${buildingId}`, (result) => {
@@ -76,6 +82,9 @@ window.addEventListener("load", function(){
                     lastCol.addEventListener("click", () => deleteApartment(lastCol.dataset.id));
                 }
             });
+        } else {
+            tableBody.innerHTML = "";
+            container.appendChild(selectABuilding);
         }
     }
 
@@ -120,6 +129,23 @@ window.addEventListener("load", function(){
                 });
             } else pagination.innerHTML = "";
         });
+    }
+
+    function createSelectABuilding() {
+        const selectABuilding = document.createElement("div");
+        selectABuilding.classList.add("text-center");
+        selectABuilding.id = "select-a-building";
+
+        const img = document.createElement("img");
+        img.src = "/img/gecons.png";
+        img.alt = "Logo de Gecons";
+        selectABuilding.appendChild(img);
+
+        const h3 = document.createElement("h3");
+        h3.innerHTML = "<i class='fas fa-arrow-circle-up'>Seleccione un edificio</i>";
+        selectABuilding.appendChild(h3);
+
+        return selectABuilding;
     }
 
     // *********** Creación de elementos del DOM ***********
@@ -173,4 +199,5 @@ window.addEventListener("load", function(){
 
     // *********** Construcción de la página ***********
     buildSelect();
+    loadTable(1);
 });
