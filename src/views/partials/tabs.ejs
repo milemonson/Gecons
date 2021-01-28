@@ -1,5 +1,8 @@
 <%# active: El índice de la pestaña activa %>
-<ul class="nav nav-tabs nav-justified">
+<ul class="nav nav-tabs text-center d-flex flex-nowrap justify-content-around">
+    <li class="nav-item">
+        <a class="nav-link px-1 px-sm-5 <%= active == 3 ? 'active' : '' %>" href="/admin/profile"><i class="fas fa-user-circle"></i></a>
+    </li>
     <li class="nav-item">
       <a class="nav-link <%= active == 0 ? 'active' : '' %>" href="/admin/buildings">Edificios</a>
     </li>
@@ -8,5 +11,8 @@
     </li>
     <li class="nav-item">
       <a class="nav-link <%= active == 2 ? 'active' : '' %>" href="/admin/apartments">Deptos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link px-1 px-sm-5" href="/admin/logout"><i class="fas fa-sign-out-alt"></i></a>
     </li>
 </ul>
