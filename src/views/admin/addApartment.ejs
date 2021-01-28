@@ -29,8 +29,9 @@
             <!-- Descripción -->
             <div class="form-group">
                 <label for="description">Descripción:</label>
-                <textarea class="form-control" id="description" name="description" rows="3" aria-describedby="descHelp"
-                    value="<%= locals.userInput && userInput.description ? userInput.description : '' %>"></textarea>
+                <textarea class="form-control" id="description" name="description" rows="3" aria-describedby="descHelp">
+                    <%= locals.userInput && userInput.description ? userInput.description : '' %>
+                </textarea>
                 <small id="nameHelp" class="form-text text-muted">
                     Campo opcional. Máximo 500 caracteres.
                     <% if(locals.errors && errors.description) { %>
