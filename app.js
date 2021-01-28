@@ -1,8 +1,9 @@
+const fs = require("fs");
+const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
-const path = require("path");
-const fs = require("fs");
 const methodOverride = require("method-override");
+const { onFirstRun } = require("./src/utils/onFirstRun");
 const mainRoutes = require("./src/routes/mainRoutes");
 const buildingRoutes = require("./src/routes/buildingRoutes");
 const apartmentRoutes = require("./src/routes/apartmentRoutes");
@@ -33,15 +34,8 @@ app.use("/admin/apartments", apartmentRoutes);
 app.use("/api/buildings", apiBuildingRoutes);
 app.use("/api/apartments", apiApartmentRoutes);
 
-// ********** Creación de las carpetas para el guardado de archivos **********
-let docsFolder = path.join(__dirname, "docs"); // Documentos descargables
-let tempFolder = path.join(__dirname, "temp"); // Carpeta de archivos temporales
-let imagesFolder = path.join(__dirname, "public", "img", "uploaded"); // Imágenes subidas
-
-if(!fs.existsSync(docsFolder)) fs.mkdirSync(docsFolder);
-if(!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder);
-if(!fs.existsSync(imagesFolder)) fs.mkdirSync(imagesFolder);
-
 // ********** Ejecución del servidor **********
+onFirstRun();
+
 app.listen(process.env.APP_PORT, 
     () => console.log(`Escuchando en el puerto ${process.env.APP_PORT}`));
