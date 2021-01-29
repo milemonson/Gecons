@@ -55,10 +55,16 @@ window.addEventListener("load", function(){
                     }
     
                     result.data.forEach(element => {
+                        const initDate = new Date(element.initDate);
+                        const endDate = new Date(element.endDate);
+
                         content += 
                             `<tr class="text-center">
                                 <th>${element.name}</th>
-                                <td>${element.initDate} <br/> ${element.endDate} </td>
+                                <td>${initDate.toLocaleDateString()} 
+                                    <br/> 
+                                    ${endDate.toLocaleDateString()}
+                                </td>
                                 <td>${element.price}</td>
                                 <td>
                                     <a href="/admin/apartments/${element.id}">

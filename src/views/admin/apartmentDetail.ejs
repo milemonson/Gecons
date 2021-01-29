@@ -17,15 +17,18 @@
         <% } %>
 
         <!-- Fechas de inicio y fin -->
-        <!-- TODO: Formatear las fechas -->
         <div class="d-flex justify-content-around">
             <div class="d-flex flex-column d-inline-block">
                 <h3 class="h6">Fecha de inicio:</h3>
-                <span class="d-block text-center"><%= apartment.initDate %></span>
+                <span class="d-block text-center">
+                    <%= new Date(apartment.initDate).toLocaleDateString() %>
+                </span>
             </div>
             <div class="d-flex flex-column d-inline-block">
                 <h3 class="h6">Fecha de fin:</h3>
-                <span class="d-block text-center"><%= apartment.endDate %></span>
+                <span class="d-block text-center">
+                    <%= new Date(apartment.endDate).toLocaleDateString() %>
+                </span>
             </div>
         </div>
 
