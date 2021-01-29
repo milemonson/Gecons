@@ -26,4 +26,7 @@ router.put("/:id/edit", upload.fields([{ name : "doc" }, { name : "images" }]),
 // Descarga de documentos
 router.get("/download/:doc", controller.download);
 
+// Detalle del departamento
+router.get("/:id", controller.detail);
+
 module.exports = router;

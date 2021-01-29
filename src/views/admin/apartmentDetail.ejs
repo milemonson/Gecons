@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+    <%- include("../partials/head", { title : `Dashboard - ${apartment.name} en ${apartment.Building.name}` }) %>
+
+<body>
+
+    <div class="container">
+
+        <%- include("../partials/tabs", { active : 2 }) %>
+
+        <h2><%= apartment.name %>, en <%= apartment.Building.name %></h2>
+        <% if(locals.apartment.description) { %>
+            <p class="border rounded border-secondary px-3 py-2">
+                <%= apartment.description %>
+            </p>
+        <% } %>
+
+        <!-- Fechas de inicio y fin -->
+        <!-- TODO: Formatear las fechas -->
+        <div class="d-flex justify-content-around">
+            <div class="d-flex flex-column d-inline-block">
+                <h3 class="h6">Fecha de inicio:</h3>
+                <span class="d-block text-center"><%= apartment.initDate %></span>
+            </div>
+            <div class="d-flex flex-column d-inline-block">
+                <h3 class="h6">Fecha de fin:</h3>
+                <span class="d-block text-center"><%= apartment.endDate %></span>
+            </div>
+        </div>
+
+        <!-- Precio -->
+        <div class="form-row input-group mb-3">
+            <div class="input-group-append">
+                <span class="input-group-text">Monto:</span>
+            </div>
+            <input type="text" class="form-control bg-white" readonly value="$<%= apartment.price %>">
+        </div>
+
+        <!-- Descargar documento -->
+        <% if(apartment.documentUrl) { %>
+            <div class="form-row input-group mt-3 mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="download-document">
+                        <a href="/admin/apartments/download/<%= apartment.documentUrl %>">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    </span>
+                </div>
+                <input type="text" class="form-control bg-white" readonly value="Descargar documento de texto">
+            </div>
+        <% } %>
+
+        <!-- Imágenes -->
+        <% if(apartment.Images.length){ %>
+            <label for="img-shower">Imágenes subidas:</label>
+            <div class="form-row container border border-secondary rounded"
+                style="display: flex; justify-content: space-around;"
+                id="img-shower" aria-describedby="uploadedHelp">
+                <% apartment.Images.forEach(img => { %>
+                    <img src="/img/uploaded/<%= img.url %>" alt="Imagen del departamento"
+                    style="width: 30%; border-radius: 2%;" data-url="<%= img.url %>">
+                <% }); %>
+            </div>
+            <input type="hidden" id="img-selected" name="img-selected">
+            <small id="uploadedHelp" class="form-text text-muted">
+                Seleccione una imagen para ampliar.
+            </small>
+        <% } %>
+
+        <!-- Botones de edición/borrado -->
+        <div class="d-flex justify-content-around">
+            <a class="btn btn-primary" href="/admin/apartments/<%= apartment.id %>/edit">Editar</a>
+            <a class="btn btn-primary" href="#">Borrar</a>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

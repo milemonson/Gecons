@@ -15,7 +15,25 @@ module.exports = {
     },
 
     /** Detalle de un departamento */
-    detail : (req, res) => {},
+    detail : (req, res) => {
+        Apartment.findByPk(Number(req.params.id), {
+            include : [
+                {
+                    model : Image,
+                    attributes : ["url"]
+                },
+                {
+                    model : Building,
+                    attributes : ["id", "name"]
+                }
+            ]
+        }) // TODO : Contemplar el caso en el que se ingresen ids inexistentes
+            .then(result => {
+                res.render("admin/apartmentDetail", {
+                    apartment : result
+                });
+            });
+    },
 
     /** Vista de creación */
     create : (req, res) => {
