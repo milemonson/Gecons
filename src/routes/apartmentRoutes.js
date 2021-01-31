@@ -26,6 +26,9 @@ router.put("/:id/edit", upload.fields([{ name : "doc" }, { name : "images" }]),
 // Descarga de documentos
 router.get("/download/:doc", controller.download);
 
+// Borrado de deptos
+router.delete("/delete/:id", controller.delete);
+
 // Detalle del departamento
 router.get("/:id", controller.detail);
 

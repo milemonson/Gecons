@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { validationResult } = require("express-validator");
-const { Building, Apartment, Image } = require("../database/models");
+const { Building, Apartment, Image, sequelize } = require("../database/models");
 
 const DOCS_DIRECTORY = path.join(__dirname, "..", "..", "docs");
 const IMG_DIRECTORY = path.join(__dirname, "..", "..", "public", "img", "uploaded");
@@ -242,6 +242,54 @@ module.exports = {
                     });
                 });
         }
+    },
+
+    /**
+     * Borra un registro en la base de datos teniendo en cuenta sus asociaciones.
+     */
+    delete : async (req, res) => {
+        let id = Number(req.params.id);
+
+        try {
+            
+            let documentToDelete = await Apartment.findByPk(id, {
+                attributes : ["documentUrl"]
+            });
+
+            let imagesToDelete = await Image.findAll({ 
+                where : { apartmentId : id }
+            });
+
+            await sequelize.transaction(async (t) => { // Transacciones a BD
+                await Image.destroy({
+                    where : { apartmentId : id },
+                }, { transaction : t });
+                
+                await Apartment.destroy({ 
+                    where : { id : id }
+                }, { transaction : t });
+            });
+            
+            // Si se llega a ejecutar esta sección, significa que la transacción fue exitosa
+            if(documentToDelete.documentUrl){ // Borrado del documento asociado al depto
+                fs.unlinkSync(path.join(DOCS_DIRECTORY, documentToDelete.documentUrl));
+            }
+
+            if(imagesToDelete.length){ // Borrado de las imágenes del disco
+                imagesToDelete.forEach(element => {
+                    fs.unlinkSync(path.join(IMG_DIRECTORY, element.url));
+                });
+            }
+
+            res.status(200).redirect("/admin/apartments");
+
+        } catch (error) {
+            // El Rollback es automático..
+            // TODO : Mostrar algún feedback
+            console.log(error);
+            res.status(500).redirect("/");
+        }
+
     },
 
     /**

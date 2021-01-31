@@ -94,15 +94,6 @@ window.addEventListener("load", function(){
         }
     }
 
-    function deleteApartment(id){ // Borrado AJAX del departamento
-        // TODO : Mostrar algún tipo de popup de confirmación
-        // TODO : Que el paginado reaccione al cambio de elementos
-        fetch(`/api/apartments/delete/${id}`, { method : "DELETE" })
-            .then(response => {
-                loadTable(currentPage);
-            });
-    }
-
     function buildPagination(buildingId){ // Armado del paginado
         apiCall(`/api/apartments/pages?b=${buildingId}`, (result) => {
             if(result.meta.count > 1){
