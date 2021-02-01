@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<%- include("../partials/head", { title : "Dashboard - Añadir edificio" }) %>
+
+<body>
+
+    <div class="container">
+        <%- include("../partials/tabs", { active : 1 }) %>
+
+        <form action="/admin/buildings/<%= locals.editable.id %>/edit?_method=PUT" method="POST">
+            <!-- Nombre -->
+            <div class="form-group">
+                <label for="name">Nombre del edificio</label>
+                <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp"
+                    value="<%= locals.editable && editable.name ? editable.name : '' %>">
+                <small id="nameHelp" class="form-text text-muted">
+                    Máx 191 caracteres, campo obligatório.
+                    <% if(locals.errors && errors.name) { %>
+                        <span class="alert-danger"><%= errors.name.msg %></span>
+                    <% } %>
+                </small>
+            </div>
+            
+            <!-- Contraseña -->
+            <div class="form-row">
+                <label for="password">Nueva contraseña de ingreso</label>
+            </div>
+            <div class="form-row align-items-center w-100">
+                <div class="col-8 col-sm-10">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="show-password">
+                                <i class="fas fa-eye-slash"></i>
+                            </div>
+                        </div>
+                        <input type="password" class="form-control" id="password" name="password" aria-describedby="passwordHelp">
+                    </div>
+                </div>
+                
+                <div class="col-2">
+                    <button type="button" class="btn btn-primary mb-2" id="autogenerate">
+                        Autogenerar
+                    </button>
+                </div>
+            </div>
+            <div class="form-row">
+                <small id="passwordHelp" class="form-text text-muted">
+                    Debe contar con una mayúscula, una minúscula y un número. 
+                    8 caracteres como mínimo y 18 como máximo.
+                    Campo obligatório.
+                    <% if(locals.errors && errors.password) { %>
+                        <span class="alert-danger"><%= errors.password.msg %></span>
+                    <% } %>
+                </small>
+            </div>
+
+            <!-- Contraseña actual -->
+            <div class="form-row">
+                <label for="oldPassword">Contraseña actual</label>
+            </div>
+            <div class="form-row align-items-center w-100">
+                <div class="col">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="show-oldPassword">
+                                <i class="fas fa-eye-slash"></i>
+                            </div>
+                        </div>
+                        <input type="password" class="form-control" id="oldPassword" name="oldPassword" aria-describedby="oldPasswordHelp">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <small id="oldPasswordHelp" class="form-text text-muted">
+                    Campo obligatório.
+                    <% if(locals.errors && errors.oldPassword) { %>
+                        <span class="alert-danger"><%= errors.oldPassword.msg %></span>
+                    <% } %>
+                </small>
+            </div>
+
+            <!-- Enviar a.. -->
+            <div class="form-group">
+                <label for="send-to">Enviar cambios a:</label>
+                <input type="email" class="form-control" id="send-to" name="send-to" aria-describedby="sendToHelp"
+                    value="<%= locals.userInput && userInput["send-to"] ? userInput["send-to"] : '' %>">
+                <small id="sendToHelp" class="form-text text-muted">
+                    Debe ingresar un mail válido. Campo opcional.
+                    <% if(locals.errors && errors["send-to"]) { %>
+                        <span class="alert-danger"><%= errors["send-to"].msg %></span>
+                    <% } %>
+                </small>
+            </div>
+
+            <!-- Botones -->
+            <div class="form-row justify-content-around">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+                <button type="reset" class="btn btn-primary">Resetear</button>
+            </div>
+        </form>
+
+        <script src="/js/validateBuilding.js"></script>
+    </div>
+
+</body>
+
+</html>
