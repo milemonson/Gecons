@@ -8,6 +8,21 @@
 
         <%- include("../partials/tabs", { active : 0 }) %>
 
+        <!-- Filtrado de elementos -->
+        <div class="form-row align-items-center w-100">
+            <div class="col">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend" id="search-button">
+                        <div class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                    <input type="text" class="form-control" id="filter" placeholder="Buscar...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de edificios -->
         <table class="table table-striped">
             <thead class="thead-dark">
                 <tr>

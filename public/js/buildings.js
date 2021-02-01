@@ -4,6 +4,8 @@ window.addEventListener("load", function(){
     const container = document.getElementById("container");
     const tableBody = document.getElementById("table-body");
     const pagination = document.getElementById("pagination");
+    const filter = document.getElementById("filter");
+    const searchButton = document.getElementById("search-button");
     // Spinner de carga
     const spinner = createSpinner();
     // Feedback sin resultados
@@ -22,7 +24,7 @@ window.addEventListener("load", function(){
     function loadTable(page){
         tableBody.appendChild(spinner);
 
-        apiCall(`/api/buildings/list?page=${page}`, (result) => {
+        apiCall(`/api/buildings/list?page=${page}&filter=${filter.value}`, (result) => {
             let content = "";
 
             if(result.meta.count != 0){
@@ -74,7 +76,8 @@ window.addEventListener("load", function(){
     // Armado del paginado
     // TODO : Contemplar el caso en el que haya demasiadas pestañas
     function buildPagination(){
-        apiCall("/api/buildings/pages", (result) => {
+
+        apiCall(`/api/buildings/pages?filter=${filter.value}`, (result) => {
             if(result.meta.count > 1){
                 let content =  "";
 
@@ -106,6 +109,21 @@ window.addEventListener("load", function(){
             }
         });
     }
+
+    // Refrescado de la tabla
+    function refreshTable() {
+        loadTable(currentPage);
+        buildPagination();
+    }
+
+    // *********** Suscripción a eventos de filtrado ***********
+    filter.addEventListener("blur", () => refreshTable());
+    filter.addEventListener("keydown", (event) => {
+        if(event.key == "Enter"){
+            refreshTable();
+        }
+    });
+    searchButton.addEventListener("click", () => refreshTable());
 
     // *********** Creación de elementos del DOM ***********
     function createNoResults(){
@@ -141,8 +159,7 @@ window.addEventListener("load", function(){
         return spinner;
     }
 
-    // *********** Carga de la vista ***********
-    loadTable(1);
-    buildPagination();
+    // *********** Inicialización de la vista ***********
+    refreshTable();
 
 });

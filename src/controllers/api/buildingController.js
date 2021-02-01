@@ -4,6 +4,7 @@
 const fs = require("fs");
 const path  = require("path");
 const { Building, Apartment, Image, sequelize } = require("../../database/models");
+const { Op } = require("sequelize");
 
 const LIMIT_PER_PAGE = 10;
 const DOCS_DIRECTORY = path.join(__dirname, ".." , "..", "..", "docs");
@@ -16,13 +17,18 @@ module.exports = {
      */
     listAll : (req, res) => {
 
-        let page = Number(req.query.page) || 1;
-        let response = {
+        const page = Number(req.query.page) || 1;
+        const response = {
             meta : {},
             data : []
         }; // Respuesta JSON
 
         Building.findAll({
+            where : {
+                name : {
+                    [Op.like] : `${req.query.filter}%`
+                }
+            },
             attributes : ["id", "name"],
             include : Apartment,
             limit : LIMIT_PER_PAGE,
@@ -66,7 +72,13 @@ module.exports = {
      */
     getPages : (req, res) => {
         
-        Building.count()
+        Building.count({
+            where : {
+                name : {
+                    [Op.like] : `${req.query.filter}%`
+                }
+            },
+        })
             .then(count => {
                 res.status(200).json({
                     meta : {
