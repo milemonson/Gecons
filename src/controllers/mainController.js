@@ -82,6 +82,23 @@ module.exports = {
         }
     },
 
+    logout : (req, res) => {
+        
+        if(req.session.admin){
+            Token.destroy({
+                where : {
+                    adminId : req.session.admin.id
+                }
+            });
+
+            res.clearCookie("uTGS");
+        }
+
+        req.session.destroy();
+
+        res.redirect("/");
+    },
+
     // Envío de mails desde el formulario de contacto del index
     contactMail : (req, res) => {
         const { email, subject, phone, name, message } = req.body;
