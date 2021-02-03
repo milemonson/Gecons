@@ -2,6 +2,8 @@ const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 const methodOverride = require("method-override");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
 const { onFirstRun } = require("./src/utils/onFirstRun");
 const mainRoutes = require("./src/routes/mainRoutes");
 const buildingRoutes = require("./src/routes/buildingRoutes");
@@ -23,8 +25,15 @@ app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src", "views"));
 
+// ********** Middlewares de autenticación **********
+// app.use(session({
+//     secret : "Gecons SA",
+//     resave: false, // No vuelve a guardarla si no hay cambios
+//     saveUninitialized: false // No guarda sesiones si todavía no hayan datos
+// }));
+// app.use(cookieParser());
 
-// ********** Middlewares a nivel de aplicación **********
+// ********** Middlewares de ruteo **********
 app.use("/", mainRoutes);
 app.use("/admin/buildings", buildingRoutes);
 app.use("/admin/apartments", apartmentRoutes);
