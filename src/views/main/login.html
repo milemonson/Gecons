@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/icongecons.png" >
+    <link rel="stylesheet" href="css/styleLogin.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+    <title>Gecons - Login</title>
+</head>
+
+<body>
+    <form class="formulario" method="POST" action="/login">
+        <h1>Login</h1>
+        <div class="contenedor">
+            <div class="input-contenedor">
+                <i class="fas fa-building icon"></i>
+                <input type="text" name="user" id="user" placeholder="Usuario/Nombre de edificio">
+            </div>
+
+            <div class="input-contenedor">
+                <i class="fas fa-key icon"></i>
+                <input type="password" name="password" id="password" placeholder="Contraseña">
+            </div>
+
+            <label class="checkable-container remember-me-container">Recordarme
+                <input type="checkbox" name="remember-me" id="remember-me" value="remember-me">
+                <span class="custom-checkable remember-me-checkable"></span>
+            </label>
+
+            <button type="submit" class="button">Ingresar</button>
+
+            <p>Al ingresar, aceptas nuestras Condiciones de uso y Política de privacidad.</p>
+        </div>
+    </form>
+
+    <script src="js/validateLogin.js"></script>
+
+</body>
+
+</html>
