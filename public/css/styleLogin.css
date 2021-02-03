@@ -55,6 +55,11 @@ p{
     text-align: center;
 }
 
+.alert-label {
+    color: red;
+    text-align: center;
+}
+
 @media(min-width:768px)
 {
     .formulario{

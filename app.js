@@ -26,12 +26,12 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src", "views"));
 
 // ********** Middlewares de autenticación **********
-// app.use(session({
-//     secret : "Gecons SA",
-//     resave: false, // No vuelve a guardarla si no hay cambios
-//     saveUninitialized: false // No guarda sesiones si todavía no hayan datos
-// }));
-// app.use(cookieParser());
+app.use(session({
+    secret : "Gecons SA",
+    resave: false, // No vuelve a guardarla si no hay cambios
+    saveUninitialized: false // No guarda sesiones si todavía no hayan datos
+}));
+app.use(cookieParser());
 
 // ********** Middlewares de ruteo **********
 app.use("/", mainRoutes);
