@@ -5,31 +5,37 @@ const multerOpts = require("../utils/multerOpts");
 const controller = require("../controllers/apartmentController");
 const createApartmentValidator = require("../validators/createApartmentValidator");
 const editApartmentValidator = require("../validators/editApartmentValidator");
+const adminRoute = require("../middlewares/adminRoute");
+const userRoute = require("../middlewares/userRoute");
 
 const upload = multer(multerOpts);
 
 // Listado
-router.get("/", controller.show);
+router.get("/", userRoute, controller.show);
 
 // Creación
-router.get("/add", controller.create);
-router.post("/add", upload.fields([{ name : "doc" }, { name : "images" }]), 
+router.get("/add", adminRoute, controller.create);
+router.post("/add",
+            adminRoute,
+            upload.fields([{ name : "doc" }, { name : "images" }]), 
             createApartmentValidator, 
             controller.store);
 
 // Edición
-router.get("/:id/edit", controller.edit);
-router.put("/:id/edit", upload.fields([{ name : "doc" }, { name : "images" }]), 
+router.get("/:id/edit", adminRoute, controller.edit);
+router.put("/:id/edit",
+            adminRoute,
+            upload.fields([{ name : "doc" }, { name : "images" }]), 
             editApartmentValidator,
             controller.update);
 
 // Descarga de documentos
-router.get("/download/:doc", controller.download);
+router.get("/download/:doc", userRoute,controller.download);
 
 // Borrado de deptos
-router.delete("/delete/:id", controller.delete);
+router.delete("/delete/:id", adminRoute, controller.delete);
 
 // Detalle del departamento
-router.get("/:id", controller.detail);
+router.get("/:id", userRoute, controller.detail);
 
 module.exports = router;

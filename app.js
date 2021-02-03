@@ -9,6 +9,8 @@ const { onFirstRun } = require("./src/utils/onFirstRun");
 const mainRoutes = require("./src/routes/mainRoutes");
 const buildingRoutes = require("./src/routes/buildingRoutes");
 const apartmentRoutes = require("./src/routes/apartmentRoutes");
+const adminRoute = require("./src/middlewares/adminRoute");
+const userRoute = require("./src/middlewares/userRoute");
 
 // ********** Rutas de la API **********
 const apiBuildingRoutes = require("./src/routes/api/buildingRoutes");
@@ -37,7 +39,7 @@ app.use(autenticateUser);
 
 // ********** Middlewares de ruteo **********
 app.use("/", mainRoutes);
-app.use("/admin/buildings", buildingRoutes);
+app.use("/admin/buildings", adminRoute, buildingRoutes);
 app.use("/admin/apartments", apartmentRoutes);
 
 // ********** Entrada a la API **********
