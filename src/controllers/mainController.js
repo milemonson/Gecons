@@ -1,10 +1,25 @@
 const path = require("path");
 const { sendMail } = require("../utils/sendMail");
+const { validationResult } = require("express-validator");
+const { Admin, Building } = require("../database/models");
 
 module.exports = {
 
     index : (req, res) => {
         res.sendFile(path.join(__dirname, "..", "views", "main", "index.html"));
+    },
+
+    // Formulario de login
+    login : (req, res) => {
+        res.sendFile(path.join(__dirname, "..", "views", "main", "login.html"));
+    },
+
+    // Autenticación del login
+    authenticate : (req, res) => {
+
+        let errors = validationResult(req);
+
+        res.json(errors.mapped());
     },
 
     // Envío de mails desde el formulario de contacto del index
