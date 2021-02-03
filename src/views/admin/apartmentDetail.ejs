@@ -78,11 +78,13 @@
         <% } %>
 
         <!-- Botones de edición/borrado -->
-        <form class="d-flex justify-content-around" method="POST" 
-            action="/admin/apartments/delete/<%= apartment.id %>?_method=DELETE">
-            <a class="btn btn-primary" href="/admin/apartments/<%= apartment.id %>/edit">Editar</a>
-            <button class="btn btn-primary" type="submit">Borrar</button>
-        </form>
+        <% if(locals.admin) { %>
+            <form class="d-flex justify-content-around" method="POST" 
+                action="/admin/apartments/delete/<%= apartment.id %>?_method=DELETE">
+                <a class="btn btn-primary" href="/admin/apartments/<%= apartment.id %>/edit">Editar</a>
+                <button class="btn btn-primary" type="submit">Borrar</button>
+            </form>
+        <% } %>
 
     </div>
 
