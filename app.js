@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const methodOverride = require("method-override");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const autenticateUser = require("./src/middlewares/authenticateUser");
 const { onFirstRun } = require("./src/utils/onFirstRun");
 const mainRoutes = require("./src/routes/mainRoutes");
 const buildingRoutes = require("./src/routes/buildingRoutes");
@@ -32,6 +33,7 @@ app.use(session({
     saveUninitialized: false // No guarda sesiones si todavía no hayan datos
 }));
 app.use(cookieParser());
+app.use(autenticateUser);
 
 // ********** Middlewares de ruteo **********
 app.use("/", mainRoutes);
