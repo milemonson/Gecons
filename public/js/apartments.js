@@ -21,17 +21,19 @@ window.addEventListener("load", function(){
     }
 
     function buildSelect(){ // Creación del selector de edificios
-        apiCall("/api/buildings/all", result => {
-            let content = "";
-
-            result.data.forEach(element => {
-                content +=   `<option value="${element.id}">
-                                ${element.name}
-                            </option>`;
+        if(buildingSelect.value == ""){
+            apiCall("/api/buildings/all", result => {
+                let content = "";
+    
+                result.data.forEach(element => {
+                    content +=   `<option value="${element.id}">
+                                    ${element.name}
+                                </option>`;
+                });
+    
+                buildingSelect.innerHTML += content;
             });
-
-            buildingSelect.innerHTML += content;
-        });
+        }
     }
 
     function loadTable(page){ // Armado de la tabla
@@ -180,7 +182,7 @@ window.addEventListener("load", function(){
     }
 
     // *********** Suscripción a eventos ***********
-    addApartment.addEventListener("click", () => {
+    if(addApartment) addApartment.addEventListener("click", () => {
         if(buildingSelect.value != ""){
             window.location.href = `/admin/apartments/add?b=${buildingSelect.value}`;
         }
