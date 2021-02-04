@@ -3,8 +3,10 @@
  */
 
 module.exports = (req, res, next) => {
-    if(req.session.building || req.session.admin){
-        res.redirect("/");
+    if(req.session.building ){
+        res.redirect("/admin/apartments");
+    } else if(req.session.admin) {
+        res.redirect("/admin/buildings");
     } else {
         next();
     }
