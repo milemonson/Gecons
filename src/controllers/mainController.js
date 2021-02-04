@@ -91,7 +91,7 @@ module.exports = {
                 }
             });
 
-            res.clearCookie("uTGS");
+            res.clearCookie("uTGC");
         }
 
         req.session.destroy();
