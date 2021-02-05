@@ -11,6 +11,16 @@ const buildingRoutes = require("./src/routes/buildingRoutes");
 const apartmentRoutes = require("./src/routes/apartmentRoutes");
 const adminRoute = require("./src/middlewares/adminRoute");
 
+// Persistencia de la sesión de usuario en BD
+// https://www.npmjs.com/package/connect-session-sequelize
+const { sequelize } = require("./src/database/models/index");
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
+const sessionStorage = new SequelizeStore({ 
+    db : sequelize,
+    checkExpirationInterval : 60 * 60 * 24,
+    expiration : 60 * 60
+});
+
 // ********** Rutas de la API **********
 const apiBuildingRoutes = require("./src/routes/api/buildingRoutes");
 const apiApartmentRoutes = require("./src/routes/api/apartmentRoutes");
@@ -29,12 +39,15 @@ app.set("views", path.join(__dirname, "src", "views"));
 
 // ********** Middlewares de autenticación **********
 app.use(session({
-    secret : "Gecons SA",
+    secret : "Gecons",
+    store : sessionStorage,
     resave: false, // No vuelve a guardarla si no hay cambios
     saveUninitialized: false // No guarda sesiones si todavía no hayan datos
 }));
 app.use(cookieParser());
 app.use(autenticateUser);
+
+sessionStorage.sync(); // Crea ó sincroniza la tabla para la persistencia de la sesión en BD
 
 // ********** Middlewares de ruteo **********
 app.use("/", mainRoutes);
