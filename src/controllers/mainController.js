@@ -31,7 +31,10 @@ module.exports = {
             
             // Si el nombre corresponde a un edificio
             if(building && bcrypt.compareSync(req.body.password, building.password)){
-                delete building.password;
+                building = { // Elimina la metadata insertada en el objeto creado por sequelize
+                    id : building.id,
+                    name : building.name
+                }
                 req.session.building = building;
             } else {
                 let admin = await Admin.findOne({
@@ -41,7 +44,10 @@ module.exports = {
                 });
                 
                 if(admin && bcrypt.compareSync(req.body.password, admin.password)){
-                    delete admin.password;
+                    admin = {
+                        id : admin.id,
+                        name : admin.name
+                    }
                     req.session.admin = admin;
                 } else {
                     // Mensaje de error en el formato que usa express-validator
