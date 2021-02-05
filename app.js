@@ -17,8 +17,8 @@ const { sequelize } = require("./src/database/models/index");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const sessionStorage = new SequelizeStore({ 
     db : sequelize,
-    checkExpirationInterval : 60 * 60 * 24,
-    expiration : 60 * 60
+    checkExpirationInterval : 60 * 60 * 24 * 1000,
+    expiration : 60 * 60 * 1000
 });
 
 // ********** Rutas de la API **********
