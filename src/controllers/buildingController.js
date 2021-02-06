@@ -1,11 +1,7 @@
-const fs = require("fs");
-const path = require("path");
 const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 const { Building } = require("../database/models");
 
-const DOCS_DIRECTORY = path.join(__dirname, "..", "..", "docs");
-const IMG_DIRECTORY = path.join(__dirname, "..", "..", "public", "img", "uploaded");
 const SALT_NUMBER = 12;
 
 module.exports = {
@@ -54,7 +50,6 @@ module.exports = {
 
         Building.findByPk(req.params.id, { attributes : ["id", "name"]})
             .then(editable => {
-
                 res.render("admin/editBuilding", {
                     editable : editable
                 });
@@ -62,11 +57,34 @@ module.exports = {
     },
 
     /** Procesamiento de la edición de un edificio existente */
-    update : (req, res) => {
-        
-        let errors = validationResult(req);
+    update : async (req, res) => {
+        const id = Number(req.params.id);
+        const errors = validationResult(req).mapped();
 
-        if(errors.isEmpty()){
+        // Validaciones que requieren acceso a la base de datos
+        if(!errors.name){
+            let old = await Building.findOne({ 
+                attributes : ["id"],
+                where : { name : req.body.name } 
+            });
+            // El nombre puede coincidir con el anterior, pero no con el de otro edificio
+            if(old && old.id != id) {
+                errors.name = {
+                    msg : "Nombre del edificio en uso."
+                }
+            }
+        }
+
+        if(!errors.oldPassword){
+            let old = await Building.findByPk(id, { attributes : ["password"] });
+            if(!bcrypt.compareSync(req.body.oldPassword, old.password)){
+                errors.oldPassword = {
+                    msg : "Contraseña incorrecta."
+                }
+            }
+        }
+
+        if(Object.keys(errors).length === 0){ // Si no hay errores
             let updated = { name : req.body.name }
 
             if(req.body.password && req.body.password != ""){
@@ -74,25 +92,22 @@ module.exports = {
             }
 
             // TODO : Procesar el mail
-            Building.update(updated, { 
-                where : { "id" : req.params.id } 
-            })
-                .then(() => {
-                    res.redirect("/admin/buildings");
-                })
-                // TODO : Atajar el error
-        } else {
+            await Building.update(updated, { 
+                where : { id : id } 
+            });
 
-            Building.findByPk(req.params.id, {attributes : ["id", "name"]})
-                .then(editable => {
-                    res.render("admin/editbuilding", {
-                        errors : errors.mapped(),
-                        editable : editable,
-                        userInput : {
-                            "send-to" : req.body["send-to"]
-                        }
-                    })
-                });
+            res.redirect("/admin/buildings");
+
+        } else {
+            const editable = await Building.findByPk(req.params.id, {attributes : ["id", "name"]});
+
+            res.render("admin/editbuilding", {
+                errors : errors,
+                editable : editable,
+                userInput : {
+                    "send-to" : req.body["send-to"]
+                }
+            })
         }
     }
 
