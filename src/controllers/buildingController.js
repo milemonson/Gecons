@@ -101,7 +101,7 @@ module.exports = {
         } else {
             const editable = await Building.findByPk(req.params.id, {attributes : ["id", "name"]});
 
-            res.render("admin/editbuilding", {
+            res.render("admin/editBuilding", {
                 errors : errors,
                 editable : editable,
                 userInput : {
