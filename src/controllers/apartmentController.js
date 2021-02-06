@@ -5,7 +5,7 @@ const { Building, Apartment, Image, sequelize } = require("../database/models");
 
 const DOCS_DIRECTORY = path.join(__dirname, "..", "..", "docs");
 const IMG_DIRECTORY = path.join(__dirname, "..", "..", "public", "img", "uploaded");
-const TEMP_DIRECTORY = path.join(__dirname, "..", "..", "temp");
+const TEMP_DIRECTORY = path.join(__dirname, "..", "..", "tmp");
 
 module.exports = {
 
@@ -46,14 +46,12 @@ module.exports = {
     },
 
     /** Procesamiento de la vista de creación */
-    store : (req, res) => {
+    store : async (req, res) => {
 
+        // TODO : Validar los archivos subidos
         let errors = validationResult(req);
-        let tempFilesDir = path.join(TEMP_DIRECTORY, req.body.name);
         
         if(errors.isEmpty()){
-            
-            // TODO : Validar los archivos subidos, imitar la estructura de errores de express-validator
 
             let newApartment = {
                 name : req.body.name,
@@ -69,49 +67,47 @@ module.exports = {
             if(req.files && req.files.doc)
                 newApartment.documentUrl = req.files.doc[0].filename;
             
-            Apartment.create(newApartment)
-                .then(created => {
+            let created = await Apartment.create(newApartment);
 
-                    // Movida de la carpeta temporal a la nueva carpeta
-                    if(created.documentUrl){
-                        fs.renameSync(
-                            path.join(tempFilesDir, "docs", created.documentUrl),
-                            path.join(DOCS_DIRECTORY, created.documentUrl)
-                        );
+            // Movida de la carpeta temporal a la nueva carpeta
+            if(created.documentUrl){
+                fs.renameSync(
+                    path.join(TEMP_DIRECTORY, created.documentUrl),
+                    path.join(DOCS_DIRECTORY, created.documentUrl)
+                );
+            }
+
+            if(req.files && req.files.images){
+                // Creacion de los registro en un sólo INSERT
+                let newImages = req.files.images.map((value) => {
+                    return {
+                        url : value.filename,
+                        apartmentId : created.id
                     }
-                    
-                    // En caso de subida de imágenes, se retornan las promesas de almacenamiento en BD,
-                    // caso contrario se retorna una promesa resuelta que retorna un valor "false"
-                    if(req.files && req.files.images){
-                        let imagePromises = [];
-
-                        req.files.images.forEach(element => {
-                            imagePromises.push(Image.create({ 
-                                url : element.filename,
-                                apartmentId : created.id
-                            }));
-                        });
-
-                        return Promise.all(imagePromises);
-                    } else 
-                        return Promise.resolve(false);
-                })
-                .then(results => {
-                    if(results){ // En caso de que la promesa resuelta sea el registro de imágenes
-                        results.forEach(image => {
-                            fs.renameSync(
-                                path.join(tempFilesDir, "img", image.url),
-                                path.join(IMG_DIRECTORY, image.url)
-                            );
-                        });
-                    }
-
-                    fs.rmdirSync(tempFilesDir, { recursive : true }); // Borrado de la carpeta temporal
-                    res.redirect("/admin/apartments");
                 });
+
+                await Image.bulkCreate(newImages);
+
+                // Movida de archivos de la carpeta temporal
+                req.files.images.forEach(image => {
+                    fs.renameSync(
+                        path.join(TEMP_DIRECTORY, image.filename),
+                        path.join(IMG_DIRECTORY, image.filename)
+                    );
+                });
+            }
+
+            res.redirect("/admin/apartments");
             
         } else { // En caso de errores, se descartan los archivos de la carpeta temporal
-            fs.rmdirSync(tempFilesDir, { recursive : true });
+            if(req.files && req.files.doc){
+                fs.unlinkSync(path.join(TEMP_DIRECTORY, req.files.doc[0].filename));
+            }
+            if(req.files && req.files.images){
+                req.files.images.forEach(image => {
+                    fs.unlinkSync(path.join(TEMP_DIRECTORY, image.filename));
+                });
+            }
 
             res.render("admin/addApartment", {
                 errors : errors.mapped(),
@@ -148,10 +144,10 @@ module.exports = {
     },
 
     /** Procesamiento de la vista de edición */
-    update : (req, res) => {
-        // TODO : Integrar el borrado de imágenes
-        let errors = validationResult(req);
-        let tempFilesDir = path.join(TEMP_DIRECTORY, req.body.name);
+    update : async (req, res) => {
+        
+        const id = Number(req.params.id);
+        const errors = validationResult(req);
 
         if(errors.isEmpty()){
 
@@ -165,62 +161,69 @@ module.exports = {
             // Campos opcionales
             if(req.body.description != "")
                 updated.description = req.body.description;
-            if(req.files && req.files.doc)
+
+            if(req.files && req.files.doc){// Cambio de documento
                 updated.documentUrl = req.files.doc[0].filename;
-            
-            Apartment.update(updated, {
-                where : { id : Number(req.params.id) }
-            })
-                .then(() => {
-                    // En caso de subida de imágenes
-                    if(req.files && req.files.images){
-                        let imagePromises = [];
-
-                        req.files.images.forEach(element => {
-                            imagePromises.push(Image.create({ 
-                                url : element.filename,
-                                apartmentId : Number(req.params.id)
-                            }));
-                        });
-
-                        return Promise.all(imagePromises);
-                    } else 
-                        return Promise.resolve(false);
-                })
-                .then(results => {
-                    if(results){
-                        results.forEach(image => {
-                            fs.renameSync(
-                                path.join(tempFilesDir, "img", image.url),
-                                path.join(IMG_DIRECTORY, image.url)
-                            );
-                        });
-                    }
-
-                    fs.rmdirSync(tempFilesDir, { recursive : true }); // Borrado de la carpeta temporal
                 
-                    // Aplicando casi la misma lógica, se resuelve el borrado de imágenes en caso de que se seleccionen
-                    if(req.body["img-selected"]){
-                        let imagePromises = [];
-                        let images = req.body["img-selected"].split(",");
-                        console.log(images);
-                        images.forEach(element => {
-                            imagePromises.push(Image.destroy({ where : { url : element } }));
-                            // Borrado de las imágenes del disco
-                            fs.unlinkSync(path.join(IMG_DIRECTORY, element));
-                        });
+                let apartment = await Apartment.findByPk(id, { attributes : ["documentUrl"] });
 
-                        return Promise.all(imagePromises);
-                    } else 
-                        return Promise.resolve();
-                })
-                .then(() => {
-                    res.redirect("/admin/apartments");
+                fs.unlinkSync(path.join(DOCS_DIRECTORY, apartment.documentUrl));
+                fs.renameSync(
+                    path.join(TEMP_DIRECTORY, updated.documentUrl),
+                    path.join(DOCS_DIRECTORY, updated.documentUrl)
+                );
+            }
+            
+            await Apartment.update(updated, {
+                where : { id : Number(req.params.id) }
+            });
+
+            // En caso de que se hayan agregado imágenes
+            if(req.files && req.files.images){
+                let newImages = req.files.images.map((value) => {
+                    return {
+                        url : value.filename,
+                        apartmentId : id
+                    }
                 });
 
+                await Image.bulkCreate(newImages);
+
+                // Movida de archivos de la carpeta temporal
+                req.files.images.forEach(image => {
+                    fs.renameSync(
+                        path.join(TEMP_DIRECTORY, image.filename),
+                        path.join(IMG_DIRECTORY, image.filename)
+                    );
+                });
+            }
+
+            // Si se seleccionaron imágenes para borrar
+            if(req.body["img-selected"]){
+                let imagesToDelete = req.body["img-selected"].split(",");
+
+                await Image.destroy({ where : { url : imagesToDelete } });
+
+                // Borrado de los arcrivos
+                imagesToDelete.forEach( url => {
+                    fs.unlinkSync(path.join(IMG_DIRECTORY, url));
+                });
+            }
+
+            res.redirect("/admin/apartments");
+
         } else {
-            // TODO : Borrar los archivos temporales en caso de que se produzcan errores
-            Apartment.findByPk(Number(req.params.id),{
+            // Borrado de los archivos temporales
+            if(req.files && req.files.doc){
+                fs.unlinkSync(path.join(TEMP_DIRECTORY, req.files.doc[0].filename));
+            }
+            if(req.files && req.files.images){
+                req.files.images.forEach(image => {
+                    fs.unlinkSync(path.join(TEMP_DIRECTORY, image.filename));
+                });
+            }
+
+            let apartment = await Apartment.findByPk(Number(req.params.id),{
                 include : [
                     {
                         model : Image,
@@ -232,15 +235,14 @@ module.exports = {
                     }
                 ]
             })
-                .then(result => {
-                    res.render("admin/editApartment",{
-                        apartment : result,
-                        errors : errors.mapped(),
-                        userInput : {
-                            description : req.body.description
-                        }
-                    });
-                });
+
+            res.render("admin/editApartment",{
+                apartment : apartment,
+                errors : errors.mapped(),
+                userInput : {
+                    description : req.body.description
+                }
+            });
         }
     },
 
