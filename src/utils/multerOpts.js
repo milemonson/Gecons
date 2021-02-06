@@ -5,27 +5,12 @@ const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
 
-const TEMP_DIRECTORY = path.join(__dirname, "..", "..", "temp");
+const TEMP_DIRECTORY = path.join(__dirname, "..", "..", "tmp");
 
 let storage = multer.diskStorage({
     
     destination: function (req, file, cb) {
-
-        let tempFilesDir = path.join(TEMP_DIRECTORY,req.body.name);
-        let tempImgDir = path.join(tempFilesDir, "img");
-        let tempDocDir = path.join(tempFilesDir, "docs");
-
-        if(!fs.existsSync(tempFilesDir)){
-            fs.mkdirSync(tempFilesDir);
-            fs.mkdirSync(tempImgDir);
-            fs.mkdirSync(tempDocDir);
-        }
-
-        if(file.fieldname == "images"){ // Imágenes
-            cb(null, tempImgDir);
-        } else { // Documentos
-            cb(null, tempDocDir);
-        }
+        cb(null, TEMP_DIRECTORY);
     },
 
     filename: function (req, file, cb) {

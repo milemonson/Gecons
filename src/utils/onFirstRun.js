@@ -9,7 +9,7 @@ const { Admin } = require("../database/models");
 // ********** Creación de las carpetas para el guardado de archivos **********
 function createFolders(){
     let docsFolder = path.join(__dirname, "..", "..", "docs"); // Documentos descargables
-    let tempFolder = path.join(__dirname, "..", "..", "temp"); // Carpeta de archivos temporales
+    let tempFolder = path.join(__dirname, "..", "..", "tmp"); // Carpeta de archivos temporales
     let imagesFolder = path.join(__dirname, "..", "..", "public", "img", "uploaded"); // Imágenes subidas
     
     if(!fs.existsSync(docsFolder)) fs.mkdirSync(docsFolder);
