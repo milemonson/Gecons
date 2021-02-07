@@ -16,7 +16,7 @@ window.addEventListener("load", () => {
     autogenerate.addEventListener("click", () => {
         let randomPwd = "";
 
-        while(randomPwd.length < 18){
+        while(randomPwd.length < 8){
             switch(randomInt(0,2)){
                 case 0: // Minúscula
                     randomPwd += String.fromCharCode(randomInt(97, 122));
@@ -28,7 +28,7 @@ window.addEventListener("load", () => {
                     randomPwd += randomInt(0, 9);
                     break;
             }
-            if(randomPwd.length == 18 && !pwdCheck(randomPwd)) randomPwd = "";
+            if(randomPwd.length == 8 && !pwdCheck(randomPwd)) randomPwd = "";
         }
 
         password.value = randomPwd;
