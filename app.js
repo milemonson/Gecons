@@ -4,12 +4,16 @@ const dotenv = require("dotenv");
 const methodOverride = require("method-override");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
-const autenticateUser = require("./src/middlewares/authenticateUser");
 const { onFirstRun } = require("./src/utils/onFirstRun");
+
 const mainRoutes = require("./src/routes/mainRoutes");
 const buildingRoutes = require("./src/routes/buildingRoutes");
 const apartmentRoutes = require("./src/routes/apartmentRoutes");
+
+const autenticateUser = require("./src/middlewares/authenticateUser");
 const adminRoute = require("./src/middlewares/adminRoute");
+const adminAPIRoute = require("./src/middlewares/api/adminAPIRoute");
+const userAPIRoute = require("./src/middlewares/api/userAPIRoute");
 
 // Persistencia de la sesión de usuario en BD
 // https://www.npmjs.com/package/connect-session-sequelize
@@ -54,9 +58,9 @@ app.use("/", mainRoutes);
 app.use("/admin/buildings", adminRoute, buildingRoutes);
 app.use("/admin/apartments", apartmentRoutes);
 
-// ********** Entrada a la API **********
-app.use("/api/buildings", apiBuildingRoutes);
-app.use("/api/apartments", apiApartmentRoutes);
+// ********** Acceso a la API **********
+app.use("/api/buildings", adminAPIRoute, apiBuildingRoutes);
+app.use("/api/apartments", userAPIRoute,apiApartmentRoutes);
 
 // ********** Ejecución del servidor **********
 onFirstRun();
