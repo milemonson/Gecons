@@ -72,9 +72,9 @@ module.exports = {
                 res.cookie("uTGC", token, {maxAge : 1000 * 60 * 60 * 24 * 30});
             }
 
-            // Redireccionamiento según se es admin ó edificio
+            // Redireccionamiento según sea admin ó edificio
             if(building){
-                return res.redirect("/admin/apartments");
+                return res.redirect(`/admin/apartments/list/${building.id}`);
             }
             else{
                 res.redirect("/admin/buildings");
@@ -88,21 +88,22 @@ module.exports = {
         }
     },
 
-    logout : (req, res) => {
+    logout : async (req, res) => {
         
         if(req.session.admin){
-            Token.destroy({
+            // Borrado de cookies de usuario
+            await Token.destroy({
                 where : {
                     adminId : req.session.admin.id
                 }
             });
-
+            
             res.clearCookie("uTGC");
         }
 
         req.session.destroy();
 
-        res.redirect("/");
+        res.redirect("/login");
     },
 
     // Envío de mails desde el formulario de contacto del index

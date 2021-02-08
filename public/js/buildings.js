@@ -25,6 +25,8 @@ window.addEventListener("load", function(){
         tableBody.appendChild(spinner);
 
         apiCall(`/api/buildings/list?page=${page}&filter=${filter.value}`, (result) => {
+            
+            tableBody.removeChild(spinner);
             let content = "";
 
             if(result.meta.count != 0){
@@ -36,7 +38,9 @@ window.addEventListener("load", function(){
                 result.data.forEach(element => {
                     content += 
                         `<tr>
-                            <th>${element.name}</th>
+                            <th>
+                                <a href="/admin/apartments/list/${element.id}">${element.name}</a>
+                            </th>
                             <td>${element.apartments}</td>
                             <td>
                                 <a href="/admin/buildings/${element.id}/edit">
@@ -51,7 +55,6 @@ window.addEventListener("load", function(){
             }
 
             // Rellenado de la tabla
-            tableBody.removeChild(spinner);
             tableBody.innerHTML = content;
 
             // Suscripción a eventos de los botones de borrado

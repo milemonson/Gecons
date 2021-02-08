@@ -11,7 +11,7 @@ const userRoute = require("../middlewares/userRoute");
 const upload = multer(multerOpts);
 
 // Listado
-router.get("/", userRoute, controller.show);
+router.get("/list/:bId", userRoute, controller.show);
 
 // Creación
 router.get("/add", adminRoute, controller.create);

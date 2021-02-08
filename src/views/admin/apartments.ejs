@@ -10,25 +10,11 @@
         <%- include("../partials/tabs", { active : 2 }) %>
 
         <div class="form-row">
-            <div class="form-group col-6 justify-content-center">
-                <select class="form-control" id="building-select">
-                    <% if(locals.building) { %>
-                        <option value="<%= building.id %>" selected>
-                            <%= building.name %>
-                        </option>
-                    <% } else { %>
-                        <option value="">
-                            -- Seleccionar edificio --
-                        </option>
-                    <% } %>
-                    <!-- Construido desde el script -->
-                </select>
-            </div>
             <% if(locals.admin) { %>
                 <div class="form-group col-6 justify-content-center">
-                    <button type="button" class="btn btn-primary" id="add-apartment">
+                    <a class="btn btn-primary" href="/admin/apartments/add?b=<%= locals.buildingId %>">
                         + Añadir depto
-                    </button>
+                    </a>
                 </div>
             <% } %>
         </div>
@@ -42,7 +28,9 @@
                   <th scope="col">Ver</th>
                 </tr>
             </thead>
-            <tbody id="table-body"></tbody> <!-- Construido desde el script -->
+            <tbody id="table-body" data-building="<%= locals.buildingId %>">
+                <!-- Construido desde el script -->
+            </tbody>
         </table>
 
         <nav aria-label="Page navigation">

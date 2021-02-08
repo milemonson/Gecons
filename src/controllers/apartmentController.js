@@ -11,7 +11,7 @@ module.exports = {
 
     /** Listado de todos los departamentos */
     show : (req, res) => {
-        res.render("admin/apartments");
+        res.render("admin/apartments",{ buildingId : Number(req.params.bId) });
     },
 
     /** Detalle de un departamento */
@@ -97,7 +97,7 @@ module.exports = {
                 });
             }
 
-            res.redirect("/admin/apartments");
+            res.redirect(`/admin/apartments/list/${req.body.buildingId}`);
             
         } else { // En caso de errores, se descartan los archivos de la carpeta temporal
             if(req.files && req.files.doc){
@@ -210,7 +210,8 @@ module.exports = {
                 });
             }
 
-            res.redirect("/admin/apartments");
+            // TODO: Enviar a la vista de "completado"
+            res.redirect("/admin/buildings");
 
         } else {
             // Borrado de los archivos temporales
@@ -282,8 +283,8 @@ module.exports = {
                     fs.unlinkSync(path.join(IMG_DIRECTORY, element.url));
                 });
             }
-
-            res.status(200).redirect("/admin/apartments");
+            
+            res.redirect("/admin/buildings");
 
         } catch (error) {
             // El Rollback es automático..

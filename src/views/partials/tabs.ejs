@@ -2,18 +2,21 @@
 <ul class="nav nav-tabs text-center d-flex flex-nowrap justify-content-around">
     <% if(locals.admin){ %>
         <li class="nav-item">
-            <a class="nav-link px-1 px-sm-5 <%= active == 3 ? 'active' : '' %>" href="/admin/profile"><i class="fas fa-user-circle"></i></a>
+            <a class="nav-link px-1 px-sm-5 <%= active == 3 ? 'active' : '' %>" href="/profile"><i class="fas fa-user-circle"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <%= active == 0 ? 'active' : '' %>" href="/admin/buildings">Edificios</a>
+            <a class="nav-link <%= active == 0 ? 'active' : '' %>" href="/admin/buildings">Edificios</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <%= active == 1 ? 'active' : '' %>" href="/admin/buildings/add">Añadir</a>
+            <a class="nav-link <%= active == 1 ? 'active' : '' %>" href="/admin/buildings/add">Añadir</a>
         </li>
-        <% } %>
-    <li class="nav-item">
-      <a class="nav-link <%= active == 2 ? 'active' : '' %>" href="/admin/apartments">Deptos</a>
-    </li>
+    <% } else if(locals.building) { %>
+        <li class="nav-item">
+            <a class="nav-link <%= active == 2 ? 'active' : '' %>" href="/admin/apartments/list/<%= building.id %>">
+                Deptos
+            </a>
+        </li>
+    <% } %>
     <li class="nav-item">
         <a class="nav-link px-1 px-sm-5" href="/logout"><i class="fas fa-sign-out-alt"></i></a>
     </li>
