@@ -52,13 +52,15 @@ module.exports = {
         let errors = validationResult(req);
         
         if(errors.isEmpty()){
+            const createdAt = new Date().toISOString().substring(0, 10);
 
             let newApartment = {
                 name : req.body.name,
                 price : Number(req.body.price),
                 initDate : req.body["init-date"],
                 endDate : req.body["end-date"],
-                buildingId : req.body.buildingId
+                buildingId : req.body.buildingId,
+                createdAt : createdAt
             }
 
             // Campos opcionales

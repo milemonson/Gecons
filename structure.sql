@@ -41,6 +41,7 @@ CREATE TABLE `apartments` (
   `end_date` date NOT NULL,
   `price` decimal(10,2) unsigned DEFAULT NULL,
   `document_url` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+  `created_at` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `building_id` (`building_id`),
   CONSTRAINT `apartments_ibfk_1` FOREIGN KEY (`building_id`) REFERENCES `buildings` (`id`)
