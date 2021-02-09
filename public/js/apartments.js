@@ -31,20 +31,23 @@ window.addEventListener("load", function () {
                 result.data.forEach(element => {
                     const initDate = new Date(element.initDate);
                     const endDate = new Date(element.endDate);
+                    const createdAt = new Date(element.createdAt);
 
                     content +=
                         `<tr class="text-center">
-                            <th>${element.name}</th>
-                            <td>${initDate.toLocaleDateString()} 
+                            <th>
+                                <a href="/admin/apartments/${element.id}">
+                                    ${element.name}
+                                <a>
+                            </th>
+                            <td>${initDate.toLocaleDateString("es-AR", { timeZone : "UTC" })} 
                                 <br/> 
-                                ${endDate.toLocaleDateString()}
+                                ${endDate.toLocaleDateString("es-AR", { timeZone : "UTC" })}
+                            </td>
+                            <td>
+                                ${createdAt.toLocaleDateString("es-AR", { timeZone : "UTC" })}
                             </td>
                             <td>${element.price}</td>
-                            <td>
-                                <a href="/admin/apartments/${element.id}">
-                                    <i class="fas fa-eye"></i>
-                                <a>
-                            </td>
                         </tr>`;
                 });
             } else {
