@@ -5,6 +5,8 @@ const { sendMail } = require("../utils/sendMail");
 const { validationResult } = require("express-validator");
 const { Admin, Building, Token } = require("../database/models");
 
+const SALT_NUMBER = 12;
+
 module.exports = {
 
     index : (req, res) => {
@@ -104,6 +106,44 @@ module.exports = {
         req.session.destroy();
 
         res.redirect("/login");
+    },
+
+    // Vista del perfil de usuario
+    profile : (req, res) => {
+        res.render("admin/profile");
+    },
+
+    putProfile : async (req, res) => {
+        const errors = validationResult(req).mapped();
+
+        // Checkeo de password
+        if(!errors.oldPassword){
+            let old = await Admin.findByPk(req.session.admin.id, { attributes : ["password"] });
+            if(!bcrypt.compareSync(req.body.oldPassword, old.password)){
+                errors.oldPassword = {
+                    msg : "Contraseña incorrecta."
+                }
+            }
+        }
+
+        if(Object.keys(errors).length === 0){
+
+            const updated = {
+                password : bcrypt.hashSync(req.body.password, SALT_NUMBER)
+            }
+
+            await Admin.update(updated, {
+                where : { id : req.session.admin.id }
+            });
+
+            res.redirect("/admin/buildings");
+
+        } else {
+            res.render("admin/profile", {
+                errors : errors
+            });
+        }
+
     },
 
     // Envío de mails desde el formulario de contacto del index

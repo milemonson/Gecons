@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<%- include("../partials/head", { title : "Dashboard - Perfil" }) %>
+
+<body>
+    <div class="container">
+        <%- include("../partials/tabs", { active : 3 }) %>
+
+        <h2 class="h5 text-center">Perfil: <%= locals.admin.name %></h2>
+
+        <form action="/profile?_method=PUT" method="POST">
+
+            <!-- Contraseña -->
+            <div class="form-row">
+                <label for="password">Cambiar contraseña:</label>
+            </div>
+            <div class="form-row align-items-center w-100">
+                <div class="col-8 col-sm-10">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="show-password">
+                                <i class="fas fa-eye-slash"></i>
+                            </div>
+                        </div>
+                        <input type="password" class="form-control" id="password" name="password" aria-describedby="passwordHelp">
+                    </div>
+                </div>
+                
+                <div class="col-2">
+                    <button type="button" class="btn btn-primary mb-2" id="autogenerate">
+                        Generar
+                    </button>
+                </div>
+            </div>
+            <div class="form-row">
+                <small id="passwordHelp" class="form-text text-muted">
+                    Debe contar con una mayúscula, una minúscula y un número. 
+                    8 caracteres como mínimo y 18 como máximo.
+                    <% if(locals.errors && errors.password) { %>
+                        <span class="alert-danger"><%= errors.password.msg %></span>
+                    <% } %>
+                </small>
+            </div>
+
+            <!-- Submit -->
+            <div class="form-row">
+                <label for="password">Contraseña actual:</label>
+            </div>
+            <div class="form-row align-items-center w-100">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text" id="show-oldPassword">
+                            <i class="fas fa-eye-slash"></i>
+                        </div>
+                    </div>
+                    <input type="password" class="form-control" id="oldPassword" name="oldPassword">
+                </div>
+            </div>
+            <% if(locals.errors && errors.oldPassword) { %>
+                <div class="form-row">
+                        <span class="alert-danger"><%= errors.oldPassword.msg %></span>
+                    </small>
+                </div>
+            <% } %>
+
+            <div class="form-row justify-content-around">
+                <button class="btn btn-primary" type="submit">Enviar</button>
+                <button class="btn btn-primary" type="reset">Resetear</button>
+            </div>
+
+        </form>
+
+    </div>
+
+    <script src="/js/validateProfile.js"></script>
+
+</body>
+
+</html>
