@@ -23,7 +23,7 @@ module.exports = {
         }; // Respuesta JSON
 
         Apartment.findAll({
-            attributes : ["id", "name", "initDate", "endDate", "price"],
+            attributes : ["id", "name", "initDate", "endDate", "createdAt", "price"],
             where : {
                 buildingId : fromBuilding
             },
