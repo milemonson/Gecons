@@ -19,7 +19,7 @@
                 <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp"
                     value="<%= locals.userInput && userInput.name ? userInput.name : '' %>">
                 <small id="nameHelp" class="form-text text-muted">
-                    Máx 255 caracteres, campo obligatório.
+                    Máx 500 caracteres, campo obligatório.
                     <% if(locals.errors && errors.name) { %>
                         <span class="alert-danger"><%= errors.name.msg %></span>
                     <% } %>
@@ -31,7 +31,7 @@
                 <label for="description">Descripción:</label>
                 <textarea class="form-control" id="description" name="description" rows="3" aria-describedby="descHelp"><%= locals.userInput && userInput.description ? userInput.description : '' %></textarea>
                 <small id="nameHelp" class="form-text text-muted">
-                    Campo opcional. Máximo 500 caracteres.
+                    Campo opcional. Máximo 1000 caracteres.
                     <% if(locals.errors && errors.description) { %>
                         <span class="alert-danger"><%= errors.description.msg %></span>
                     <% } %>

@@ -49,7 +49,7 @@ window.addEventListener("load", function(){
         let feedback = false;
         name.value = name.value.trim();
 
-        if(name.value == "" || name.value.length > 255) feedback = true;
+        if(name.value == "" || name.value.length > 500) feedback = true;
 
         handleFeedback(name, feedback);
     }
@@ -58,7 +58,7 @@ window.addEventListener("load", function(){
         let feedback = false;
         description.value = description.value.trim();
 
-        if(description.value != "" && description.value.length > 500) feedback = true;
+        if(description.value != "" && description.value.length > 1000) feedback = true;
 
         handleFeedback(description, feedback);
     }

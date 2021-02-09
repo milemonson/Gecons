@@ -6,7 +6,7 @@ module.exports = [
 
     check("name").trim()
         .notEmpty().withMessage("No puede estar vacío.").bail()
-        .isLength({ max : 255 }).withMessage("Máximo de caracteres superado.").bail()
+        .isLength({ max : 500 }).withMessage("Máximo de caracteres superado.").bail()
         .custom(async (value, { req }) => {
 
             let result = await Apartment.findOne({
@@ -25,7 +25,7 @@ module.exports = [
         }).withMessage("Ese departamento ya está registrado en el edificio."),
 
     check("description").optional({ checkFalsy : true }).trim()
-        .isLength({ max : 500 }).withMessage("Máximo de caracteres superado."),
+        .isLength({ max : 1000 }).withMessage("Máximo de caracteres superado."),
 
     // Fecha de inicio
     check("init-date")

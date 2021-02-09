@@ -35,8 +35,8 @@ DROP TABLE IF EXISTS `apartments`;
 CREATE TABLE `apartments` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `building_id` int(10) unsigned NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `description` varchar(500) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
+  `name` varchar(500) COLLATE utf8mb4_spanish_ci NOT NULL,
+  `description` varchar(1000) COLLATE utf8mb4_spanish_ci DEFAULT NULL,
   `init_date` date NOT NULL,
   `end_date` date NOT NULL,
   `price` decimal(10,2) unsigned DEFAULT NULL,
