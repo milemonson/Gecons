@@ -7,6 +7,7 @@ window.addEventListener("load", function(){
     const description = document.getElementById("description");
     const price = document.getElementById("price");
     const doc = document.getElementById("doc");
+    const documentsContainer = document.getElementById("documents-container");
     const images = document.getElementById("images");
     const form = document.querySelector("form");
 
@@ -23,6 +24,18 @@ window.addEventListener("load", function(){
             element.classList.remove("alert", "alert-danger");
             delete errors[element.name];
         }
+    }
+
+    function filesFeedback(){
+        let msg = "";
+
+        if(this.files.length > 1){
+            msg = this.files.length + " archivos seleccionados."
+        } else {
+            msg = this.files[0].name;
+        }
+
+        this.nextElementSibling.innerHTML = msg;
     }
 
     function imgSuscriber(shower){ // Suscriptor a eventos de las imágenes
@@ -74,6 +87,19 @@ window.addEventListener("load", function(){
     }
 
     // *********** Suscripción a eventos ***********
+    if(documentsContainer){
+        document.querySelectorAll(".delete-document").forEach(element => {
+            let parentContainer = element.parentElement;
+            element.addEventListener("click", function(){
+                fetch(`/api/apartments/document?id=${this.dataset.id}&doc=${this.dataset.url}`,
+                    { method : "DELETE" })
+                    .then(() => {
+                        documentsContainer.removeChild(parentContainer);
+                    });
+            });
+        });
+    }
+
     name.addEventListener("blur", validateName);
     description.addEventListener("blur", validateDescription);
     price.addEventListener("blur", validatePrice);
@@ -90,22 +116,9 @@ window.addEventListener("load", function(){
         if(Object.keys(errors).length) event.preventDefault(); // Cancelación del evento
     });
 
-    // Feedback visual de las imágenes selectas
-    images.addEventListener("change", function(){
-        let msg = "";
-
-        if(this.files.length > 1){
-            msg = this.files.length + " archivos seleccionados."
-        } else {
-            msg = this.files[0].name;
-        }
-
-        this.nextElementSibling.innerHTML = msg;
-    });
-
-    doc.addEventListener("change", function(){
-        this.nextElementSibling.innerHTML = this.files[0].name;
-    });
+    // Feedback visual de los archivos seleccionados
+    images.addEventListener("change", filesFeedback);
+    doc.addEventListener("change", filesFeedback);
 
     if(imgShower) imgSuscriber(imgShower);
 });

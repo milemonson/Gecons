@@ -57,3 +57,14 @@ CREATE TABLE `images` (
   KEY `images_ibfk_1` (`apartment_id`),
   CONSTRAINT `images_ibfk_1` FOREIGN KEY (`apartment_id`) REFERENCES `apartments` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
+
+DROP TABLE IF EXISTS `documents`;
+CREATE TABLE `documents` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `url` varchar(191) COLLATE utf8mb4_spanish_ci NOT NULL,
+  `apartment_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `url` (`url`),
+  KEY `apartment_id` (`apartment_id`),
+  CONSTRAINT `documents_ibfk_1` FOREIGN KEY (`apartment_id`) REFERENCES `apartments` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;

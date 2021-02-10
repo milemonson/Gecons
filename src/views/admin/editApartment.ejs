@@ -78,53 +78,47 @@
                 <% } %>
             </small>
 
-            <!-- Reemplazo y  descarga de documentos -->
+            <!-- Borrado y  descarga de documentos -->
+            <% if(apartment.Documents.length) { %>
+                <div class="form-row" id="documents-container">
+                    <label>Documentos subidos:</label>
+                    <% apartment.Documents.forEach(doc => { %>
+                        <div class="form-row input-group mt-3 mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <a href="/admin/apartments/download/<%= doc.url %>">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                </span>
+                            </div>
+                            <input type="text" class="form-control bg-white" readonly value="<%= doc.url %>">
+                            <div class="input-group-append delete-document" data-id="<%= doc.id %>" data-url="<%= doc.url %>">
+                                <span class="input-group-text">
+                                    <i class="fas fa-times"></i>
+                                </span>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } %>
+
+            <!-- Subida de nuevos documentos -->
             <div class="form-row input-group mt-3 mb-3">
-                <%# En caso de que el departamento ya tenga un documento asociado %>
-                <% if(locals.apartment && apartment.documentUrl) { %>
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">
-                            Cambiar el documento
-                        </span>
-                    </div>
-                    <div class="d-none d-sm-inline input-group-prepend">
-                        <span class="input-group-text" id="download-document">
-                            <a href="/admin/apartments/download/<%= apartment.documentUrl %>">
-                                <i class="fas fa-download"></i>
-                            </a>
-                        </span>
-                    </div>
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="doc" name="doc" aria-describedby="docHelp">
-                        <!-- Información del archivo desde el script -->
-                        <label class="custom-file-label" for="doc">
-                            <%= apartment.documentUrl %>
-                        </label>
-                    </div>
-                    
-                <% } else { %>
-
-                    <div class="d-none d-sm-inline input-group-prepend">
-                        <span class="input-group-text">
-                            Documento de texto
-                        </span>
-                    </div>
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="doc" name="doc" aria-describedby="docHelp">
-                        <!-- Información del archivo desde el script -->
-                        <label class="custom-file-label" for="doc">
-                            Elegir archivo
-                        </label>
-                    </div>
-
-                <% } %>
-
+                <div class="input-group-prepend">
+                    <span class="d-none d-sm-inline input-group-text">Añadir ocumentos</span>
+                </div>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="doc" name="doc" aria-describedby="docHelp" multiple>
+                    <!-- Información del archivo desde el script -->
+                    <label class="custom-file-label" for="doc">Elegir archivos.</label>
+                </div>
             </div>
             <small id="docHelp" class="form-text text-muted">
                 <% if(locals.errors && errors.doc) { %>
                     <span class="alert-danger"><%= errors.doc.msg %></span>
                 <% } %>
             </small>
+
 
             <!-- TODO : Muestra de las imágenes y opción de borrado -->
             <% if(apartment.Images.length){ %>

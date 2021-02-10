@@ -1,9 +1,11 @@
 /**
  * CRUD para el endpoint de la API HTTP encargado de las operaciones relacionadas a la entidad Apartment.
  */
+const fs = require("fs");
 const path = require("path");
-const { Apartment } = require("../../database/models");
+const { Apartment, Document } = require("../../database/models");
 
+const DOCS_DIRECTORY = path.join(__dirname, "..", "..", "..", "docs");
 const LIMIT_PER_PAGE = 10;
 
 module.exports = {
@@ -81,5 +83,23 @@ module.exports = {
                 res.json(response);
             });
     },
+
+    /**
+     * Borrado de documentos
+     */
+    deleteDocument : async (req, res) => {
+        const id = Number(req.query.id);
+
+        await Document.destroy({ where : { id : id } });
+        fs.unlinkSync(path.join(DOCS_DIRECTORY, req.query.doc));
+
+        res.status(200).json({
+            meta : {
+                status : 200,
+                statusMsg : "Ok"
+            }
+        });
+
+    }
 
 }

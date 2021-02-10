@@ -41,17 +41,20 @@
         </div>
 
         <!-- Descargar documento -->
-        <% if(apartment.documentUrl) { %>
-            <div class="form-row input-group mt-3 mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="download-document">
-                        <a href="/admin/apartments/download/<%= apartment.documentUrl %>">
-                            <i class="fas fa-download"></i>
-                        </a>
-                    </span>
+        <% if(apartment.Documents.length) { %>
+            <label>Documentos subidos:</label>
+            <% apartment.Documents.forEach(doc => { %>
+                <div class="form-row input-group mt-3 mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <a href="/admin/apartments/download/<%= doc.url %>">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control bg-white" readonly value="<%= doc.url %>">
                 </div>
-                <input type="text" class="form-control bg-white" readonly value="Descargar documento de texto">
-            </div>
+            <% }); %>
         <% } %>
 
         <!-- Imágenes -->

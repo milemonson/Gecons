@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { validationResult } = require("express-validator");
-const { Building, Apartment, Image, sequelize } = require("../database/models");
+const { Building, Apartment, Image, Document, sequelize } = require("../database/models");
 
 const DOCS_DIRECTORY = path.join(__dirname, "..", "..", "docs");
 const IMG_DIRECTORY = path.join(__dirname, "..", "..", "public", "img", "uploaded");
@@ -22,6 +22,10 @@ module.exports = {
                     model : Image,
                     attributes : ["url"]
                 },
+                {
+                    model : Document,
+                    attributes : ["id", "url"]
+                }, 
                 {
                     model : Building,
                     attributes : ["id", "name"]
@@ -63,25 +67,34 @@ module.exports = {
                 createdAt : createdAt
             }
 
-            // Campos opcionales
             if(req.body.description != "")
                 newApartment.description = req.body.description;
-            if(req.files && req.files.doc)
-                newApartment.documentUrl = req.files.doc[0].filename;
             
             let created = await Apartment.create(newApartment);
 
-            // Movida de la carpeta temporal a la nueva carpeta
-            if(created.documentUrl){
-                fs.renameSync(
-                    path.join(TEMP_DIRECTORY, created.documentUrl),
-                    path.join(DOCS_DIRECTORY, created.documentUrl)
-                );
+            // Asociación de archivos subidos
+            if(req.files && req.files.doc){
+                // Creacion de los registros en un sólo INSERT
+                let newDocs = req.files.doc.map(value => {
+                    return {
+                        url : value.filename,
+                        apartmentId : created.id
+                    }
+                });
+
+                await Document.bulkCreate(newDocs);
+
+                // Movida de archivos de la carpeta temporal
+                req.files.doc.forEach(doc => {
+                    fs.renameSync(
+                        path.join(TEMP_DIRECTORY, doc.filename),
+                        path.join(DOCS_DIRECTORY, doc.filename)
+                    );
+                });
             }
 
             if(req.files && req.files.images){
-                // Creacion de los registro en un sólo INSERT
-                let newImages = req.files.images.map((value) => {
+                let newImages = req.files.images.map(value => {
                     return {
                         url : value.filename,
                         apartmentId : created.id
@@ -90,7 +103,6 @@ module.exports = {
 
                 await Image.bulkCreate(newImages);
 
-                // Movida de archivos de la carpeta temporal
                 req.files.images.forEach(image => {
                     fs.renameSync(
                         path.join(TEMP_DIRECTORY, image.filename),
@@ -103,7 +115,9 @@ module.exports = {
             
         } else { // En caso de errores, se descartan los archivos de la carpeta temporal
             if(req.files && req.files.doc){
-                fs.unlinkSync(path.join(TEMP_DIRECTORY, req.files.doc[0].filename));
+                req.files.doc.forEach(doc => {
+                    fs.unlinkSync(path.join(TEMP_DIRECTORY, doc.filename));
+                });
             }
             if(req.files && req.files.images){
                 req.files.images.forEach(image => {
@@ -130,6 +144,10 @@ module.exports = {
                 {
                     model : Image,
                     attributes : ["url"]
+                },
+                {
+                    model : Document,
+                    attributes : ["id", "url"]
                 },
                 {
                     model : Building,
@@ -160,28 +178,14 @@ module.exports = {
                 endDate : req.body["end-date"]
             }
 
-            // Campos opcionales
             if(req.body.description != "")
                 updated.description = req.body.description;
-
-            if(req.files && req.files.doc){// Cambio de documento
-                updated.documentUrl = req.files.doc[0].filename;
-                
-                let apartment = await Apartment.findByPk(id, { attributes : ["documentUrl"] });
-
-                fs.unlinkSync(path.join(DOCS_DIRECTORY, apartment.documentUrl));
-                fs.renameSync(
-                    path.join(TEMP_DIRECTORY, updated.documentUrl),
-                    path.join(DOCS_DIRECTORY, updated.documentUrl)
-                );
-            }
             
             await Apartment.update(updated, {
                 where : { id : Number(req.params.id) }
             });
 
-            // En caso de que se hayan agregado imágenes
-            if(req.files && req.files.images){
+            if(req.files && req.files.images){ // AGregado de imágenes
                 let newImages = req.files.images.map((value) => {
                     return {
                         url : value.filename,
@@ -200,7 +204,25 @@ module.exports = {
                 });
             }
 
-            // Si se seleccionaron imágenes para borrar
+            if(req.files && req.files.doc){ // Agregado de archivos
+                let newDocs = req.files.doc.map(value => {
+                    return {
+                        url : value.filename,
+                        apartmentId : id
+                    }
+                });
+
+                await Document.bulkCreate(newDocs);
+
+                req.files.doc.forEach(doc => {
+                    fs.renameSync(
+                        path.join(TEMP_DIRECTORY, doc.filename),
+                        path.join(DOCS_DIRECTORY, doc.filename)
+                    );
+                });
+            }
+
+            // TODO : Pasar a un borrado de imágenes a través de APIs como el de los documentos
             if(req.body["img-selected"]){
                 let imagesToDelete = req.body["img-selected"].split(",");
 
@@ -257,8 +279,8 @@ module.exports = {
 
         try {
             
-            let documentToDelete = await Apartment.findByPk(id, {
-                attributes : ["documentUrl"]
+            let documentsToDelete = await Document.findAll({
+                where : { apartmentId : id }
             });
 
             let imagesToDelete = await Image.findAll({ 
@@ -266,8 +288,12 @@ module.exports = {
             });
 
             await sequelize.transaction(async (t) => { // Transacciones a BD
+                await Document.destroy({
+                    where : { apartmentId : id }
+                }, { transaction : t });
+
                 await Image.destroy({
-                    where : { apartmentId : id },
+                    where : { apartmentId : id }
                 }, { transaction : t });
                 
                 await Apartment.destroy({ 
@@ -275,12 +301,15 @@ module.exports = {
                 }, { transaction : t });
             });
             
-            // Si se llega a ejecutar esta sección, significa que la transacción fue exitosa
-            if(documentToDelete.documentUrl){ // Borrado del documento asociado al depto
-                fs.unlinkSync(path.join(DOCS_DIRECTORY, documentToDelete.documentUrl));
+            // Si se llega a ejecutar esta sección, significa que la transacción 
+            // tuvo éxito y se pueden borrar los archivos del disco
+            if(documentsToDelete.length){
+                documentsToDelete.forEach(element => {
+                    fs.unlinkSync(path.join(DOCS_DIRECTORY, element.url));
+                });
             }
 
-            if(imagesToDelete.length){ // Borrado de las imágenes del disco
+            if(imagesToDelete.length){
                 imagesToDelete.forEach(element => {
                     fs.unlinkSync(path.join(IMG_DIRECTORY, element.url));
                 });

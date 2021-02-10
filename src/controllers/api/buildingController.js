@@ -3,7 +3,7 @@
  */
 const fs = require("fs");
 const path  = require("path");
-const { Building, Apartment, Image, sequelize } = require("../../database/models");
+const { Building, Apartment, Image, Document, sequelize } = require("../../database/models");
 const { Op } = require("sequelize");
 
 const LIMIT_PER_PAGE = 10;
@@ -130,17 +130,23 @@ module.exports = {
      */
     delete : async (req, res) => {
 
-        let apartmentIDs; // IDs de los departamentos para el borrado de imágenes
+        let apartmentIDs; // IDs de los departamentos para el borrado de archivos
         let imagesToDelete = [];
         let documentsToDelete = [];
         const buildingId = Number(req.params.id);
 
         let apartmentsToDelete = await Apartment.findAll({
-            attributes : ["id", "documentUrl"],
-            include : {
-                model : Image,
-                attributes : ["url"]
-            },
+            attributes : ["id"],
+            include : [
+                {
+                    model : Image,
+                    attributes : ["url"]
+                },
+                {
+                    model : Document,
+                    attributes : ["url"]
+                }
+            ],
             where : {
                 buildingId : buildingId
             }
@@ -148,8 +154,11 @@ module.exports = {
 
         if(apartmentsToDelete.length){
             apartmentIDs = apartmentsToDelete.map(value => {
-                if(value.documentUrl){ // Nombre del documento para su borrado en disco
-                    documentsToDelete.push(value.documentUrl);
+
+                if(value.Documents.length){ // Nombre de los documentos para su borrado en disco
+                    value.Documents.forEach(doc => {
+                        documentsToDelete.push(doc.url);
+                    });
                 }
 
                 if(value.Images.length){ // Nombre de las imágenes para su borrado en disco
@@ -166,14 +175,18 @@ module.exports = {
             // Transacción en cascada para borrar todos los registros asociados al edificio
             await sequelize.transaction(async (t) => {
                 if(apartmentIDs){
+                    await Document.destroy({
+                        where : { apartmentId : apartmentIDs }
+                    }, { transaction : t });
+
                     await Image.destroy({
                         where : { apartmentId : apartmentIDs }
                     }, { transaction : t });
-                }
 
-                await Apartment.destroy({
-                    where : { buildingId : buildingId }
-                }, { transaction : t });
+                    await Apartment.destroy({
+                        where : { buildingId : buildingId }
+                    }, { transaction : t });
+                }
 
                 await Building.destroy({
                     where : { id : buildingId }

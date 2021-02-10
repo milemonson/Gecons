@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             this.belongsTo(models.Building);
             this.hasMany(models.Image);
+            this.hasMany(models.Document)
         }
     };
     Apartment.init({
@@ -38,11 +39,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         price: {
             type : DataTypes.DECIMAL(10, 2)
-        },
-        documentUrl : {
-            type : DataTypes.STRING(255),
-            field : "document_url",
-            allowNull : true
         },
         createdAt : {
             type : DataTypes.DATE,
