@@ -143,7 +143,7 @@ module.exports = {
             include : [
                 {
                     model : Image,
-                    attributes : ["url"]
+                    attributes : ["id", "url"]
                 },
                 {
                     model : Document,
@@ -185,7 +185,7 @@ module.exports = {
                 where : { id : Number(req.params.id) }
             });
 
-            if(req.files && req.files.images){ // AGregado de imágenes
+            if(req.files && req.files.images){ // Agregado de imágenes
                 let newImages = req.files.images.map((value) => {
                     return {
                         url : value.filename,
@@ -219,18 +219,6 @@ module.exports = {
                         path.join(TEMP_DIRECTORY, doc.filename),
                         path.join(DOCS_DIRECTORY, doc.filename)
                     );
-                });
-            }
-
-            // TODO : Pasar a un borrado de imágenes a través de APIs como el de los documentos
-            if(req.body["img-selected"]){
-                let imagesToDelete = req.body["img-selected"].split(",");
-
-                await Image.destroy({ where : { url : imagesToDelete } });
-
-                // Borrado de los arcrivos
-                imagesToDelete.forEach( url => {
-                    fs.unlinkSync(path.join(IMG_DIRECTORY, url));
                 });
             }
 

@@ -13,7 +13,6 @@ const apartmentRoutes = require("./src/routes/apartmentRoutes");
 const autenticateUser = require("./src/middlewares/authenticateUser");
 const adminRoute = require("./src/middlewares/adminRoute");
 const adminAPIRoute = require("./src/middlewares/api/adminAPIRoute");
-const userAPIRoute = require("./src/middlewares/api/userAPIRoute");
 
 // Persistencia de la sesión de usuario en BD
 // https://www.npmjs.com/package/connect-session-sequelize
@@ -60,7 +59,7 @@ app.use("/admin/apartments", apartmentRoutes);
 
 // ********** Acceso a la API **********
 app.use("/api/buildings", adminAPIRoute, apiBuildingRoutes);
-app.use("/api/apartments", userAPIRoute,apiApartmentRoutes);
+app.use("/api/apartments", apiApartmentRoutes);
 
 // ********** Ejecución del servidor **********
 onFirstRun();

@@ -3,9 +3,10 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { Apartment, Document } = require("../../database/models");
+const { Apartment, Document, Image } = require("../../database/models");
 
 const DOCS_DIRECTORY = path.join(__dirname, "..", "..", "..", "docs");
+const IMG_DIRECTORY = path.join(__dirname, "..", "..", "..", "public", "img", "uploaded");
 const LIMIT_PER_PAGE = 10;
 
 module.exports = {
@@ -85,13 +86,31 @@ module.exports = {
     },
 
     /**
-     * Borrado de documentos
+     * Borrado de documentos.
      */
     deleteDocument : async (req, res) => {
         const id = Number(req.query.id);
 
         await Document.destroy({ where : { id : id } });
         fs.unlinkSync(path.join(DOCS_DIRECTORY, req.query.doc));
+
+        res.status(200).json({
+            meta : {
+                status : 200,
+                statusMsg : "Ok"
+            }
+        });
+
+    },
+
+    /**
+     * Borrado de imágenes.
+     */
+    deleteImage : async (req, res) => {
+        const id = Number(req.query.id);
+
+        await Image.destroy({ where : { id : id} });
+        fs.unlinkSync(path.join(IMG_DIRECTORY, req.query.url));
 
         res.status(200).json({
             meta : {

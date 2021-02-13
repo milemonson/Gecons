@@ -1,5 +1,5 @@
 window.addEventListener("load", function(){
-
+    
     let errors = {}; // Errores de validación
 
     // *********** Recursos ***********
@@ -7,13 +7,11 @@ window.addEventListener("load", function(){
     const description = document.getElementById("description");
     const price = document.getElementById("price");
     const doc = document.getElementById("doc");
-    const documentsContainer = document.getElementById("documents-container");
     const images = document.getElementById("images");
     const form = document.querySelector("form");
-
-    // Selector de imágenes
+    // Borrado de archivos
     const imgShower = document.getElementById("img-shower");
-    const imgSelected = document.getElementById("img-selected");
+    const documentsContainer = document.getElementById("documents-container");
 
     // *********** Utilidades ***********
     function handleFeedback(element, feedback){ // Remarca los errores
@@ -32,29 +30,10 @@ window.addEventListener("load", function(){
         if(this.files.length > 1){
             msg = this.files.length + " archivos seleccionados."
         } else {
-            msg = this.files[0].name;
+            msg = "1 archivo seleccionado."
         }
 
         this.nextElementSibling.innerHTML = msg;
-    }
-
-    function imgSuscriber(shower){ // Suscriptor a eventos de las imágenes
-        for(subElement of shower.children){
-            subElement.addEventListener("click", function(){
-                // TODO : Clarificar esto...
-                if(this.style.border == ""){
-                    this.style.border = "2px solid red";
-                    imgSelected.value += this.dataset.url + ",";
-                } else {
-                    this.style.border = "";
-                    let dataArray = imgSelected.value.split(",");
-                    dataArray = dataArray.filter(element => {
-                        return element != this.dataset.url;
-                    });
-                    imgSelected.value = dataArray.toString();
-                }
-            });
-        }
     }
 
     // *********** Validaciones ***********
@@ -87,7 +66,7 @@ window.addEventListener("load", function(){
     }
 
     // *********** Suscripción a eventos ***********
-    if(documentsContainer){
+    if(documentsContainer){ // Borrado asincrónico de documentos
         document.querySelectorAll(".delete-document").forEach(element => {
             let parentContainer = element.parentElement;
             element.addEventListener("click", function(){
@@ -95,6 +74,21 @@ window.addEventListener("load", function(){
                     { method : "DELETE" })
                     .then(() => {
                         documentsContainer.removeChild(parentContainer);
+                    });
+            });
+        });
+    }
+
+    if(imgShower){ // Borrado asincrónico de imágenes
+        document.querySelectorAll(".delete-image").forEach(element => {
+            let parentContainer = element.parentElement;
+            element.addEventListener("click", function(){
+                fetch(`/api/apartments/image?id=${this.dataset.id}&url=${this.dataset.url}`,
+                    { method : "DELETE" })
+                    .then(() => {
+                        imgShower.removeChild(parentContainer);
+                        if(imgShower.innerHTML == "")
+                            document.removeChild(imgShower);
                     });
             });
         });
@@ -109,9 +103,6 @@ window.addEventListener("load", function(){
         validateName();
         validateDescription();
         validatePrice();
-        // Borrado de la "," residual
-        if(imgSelected && imgSelected.value)
-            imgSelected.value = imgSelected.value.substring(0, imgSelected.value.length - 1);
 
         if(Object.keys(errors).length) event.preventDefault(); // Cancelación del evento
     });
@@ -120,5 +111,4 @@ window.addEventListener("load", function(){
     images.addEventListener("change", filesFeedback);
     doc.addEventListener("change", filesFeedback);
 
-    if(imgShower) imgSuscriber(imgShower);
 });
