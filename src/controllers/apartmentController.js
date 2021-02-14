@@ -51,7 +51,7 @@ module.exports = {
 
     /** Procesamiento de la vista de creación */
     store : async (req, res) => {
-
+        
         // TODO : Validar los archivos subidos
         let errors = validationResult(req);
         
@@ -73,11 +73,12 @@ module.exports = {
             let created = await Apartment.create(newApartment);
 
             // Asociación de archivos subidos
-            if(req.files && req.files.doc){
+            if(req.body["associated-docs"]){
+                let docs = req.body["associated-docs"].split(",");
                 // Creacion de los registros en un sólo INSERT
-                let newDocs = req.files.doc.map(value => {
+                let newDocs = docs.map(value => {
                     return {
-                        url : value.filename,
+                        url : value,
                         apartmentId : created.id
                     }
                 });
@@ -85,28 +86,30 @@ module.exports = {
                 await Document.bulkCreate(newDocs);
 
                 // Movida de archivos de la carpeta temporal
-                req.files.doc.forEach(doc => {
+                docs.forEach(doc => {
                     fs.renameSync(
-                        path.join(TEMP_DIRECTORY, doc.filename),
-                        path.join(DOCS_DIRECTORY, doc.filename)
+                        path.join(TEMP_DIRECTORY, doc),
+                        path.join(DOCS_DIRECTORY, doc)
                     );
                 });
             }
 
-            if(req.files && req.files.images){
-                let newImages = req.files.images.map(value => {
+            if(req.body["associated-images"]){
+                let images = req.body["associated-images"].split(",");
+
+                let newImages = images.map(value => {
                     return {
-                        url : value.filename,
+                        url : value,
                         apartmentId : created.id
                     }
                 });
 
                 await Image.bulkCreate(newImages);
 
-                req.files.images.forEach(image => {
+                images.forEach(image => {
                     fs.renameSync(
-                        path.join(TEMP_DIRECTORY, image.filename),
-                        path.join(IMG_DIRECTORY, image.filename)
+                        path.join(TEMP_DIRECTORY, image),
+                        path.join(IMG_DIRECTORY, image)
                     );
                 });
             }
@@ -114,14 +117,14 @@ module.exports = {
             res.redirect(`/admin/apartments/list/${req.body.buildingId}`);
             
         } else { // En caso de errores, se descartan los archivos de la carpeta temporal
-            if(req.files && req.files.doc){
-                req.files.doc.forEach(doc => {
-                    fs.unlinkSync(path.join(TEMP_DIRECTORY, doc.filename));
+            if(req.body["associated-docs"]){
+                req.body["associated-docs"].split(",").forEach(doc => {
+                    fs.unlinkSync(path.join(TEMP_DIRECTORY, doc));
                 });
             }
-            if(req.files && req.files.images){
-                req.files.images.forEach(image => {
-                    fs.unlinkSync(path.join(TEMP_DIRECTORY, image.filename));
+            if(req.body["associated-images"]){
+                req.body["associated-images"].split(",").forEach(image => {
+                    fs.unlinkSync(path.join(TEMP_DIRECTORY, image));
                 });
             }
 
@@ -185,39 +188,43 @@ module.exports = {
                 where : { id : Number(req.params.id) }
             });
 
-            if(req.files && req.files.images){ // Agregado de imágenes
-                let newImages = req.files.images.map((value) => {
+            if(req.body["associated-docs"]){
+                let docs = req.body["associated-docs"].split(",");
+                // Creacion de los registros en un sólo INSERT
+                let newDocs = docs.map(value => {
                     return {
-                        url : value.filename,
-                        apartmentId : id
-                    }
-                });
-
-                await Image.bulkCreate(newImages);
-
-                // Movida de archivos de la carpeta temporal
-                req.files.images.forEach(image => {
-                    fs.renameSync(
-                        path.join(TEMP_DIRECTORY, image.filename),
-                        path.join(IMG_DIRECTORY, image.filename)
-                    );
-                });
-            }
-
-            if(req.files && req.files.doc){ // Agregado de archivos
-                let newDocs = req.files.doc.map(value => {
-                    return {
-                        url : value.filename,
+                        url : value,
                         apartmentId : id
                     }
                 });
 
                 await Document.bulkCreate(newDocs);
 
-                req.files.doc.forEach(doc => {
+                // Movida de archivos de la carpeta temporal
+                docs.forEach(doc => {
                     fs.renameSync(
-                        path.join(TEMP_DIRECTORY, doc.filename),
-                        path.join(DOCS_DIRECTORY, doc.filename)
+                        path.join(TEMP_DIRECTORY, doc),
+                        path.join(DOCS_DIRECTORY, doc)
+                    );
+                });
+            }
+
+            if(req.body["associated-images"]){
+                let images = req.body["associated-images"].split(",");
+
+                let newImages = images.map(value => {
+                    return {
+                        url : value,
+                        apartmentId : id
+                    }
+                });
+
+                await Image.bulkCreate(newImages);
+
+                images.forEach(image => {
+                    fs.renameSync(
+                        path.join(TEMP_DIRECTORY, image),
+                        path.join(IMG_DIRECTORY, image)
                     );
                 });
             }
@@ -227,12 +234,14 @@ module.exports = {
 
         } else {
             // Borrado de los archivos temporales
-            if(req.files && req.files.doc){
-                fs.unlinkSync(path.join(TEMP_DIRECTORY, req.files.doc[0].filename));
+            if(req.body["associated-docs"]){
+                req.body["associated-docs"].split(",").forEach(doc => {
+                    fs.unlinkSync(path.join(TEMP_DIRECTORY, doc));
+                });
             }
-            if(req.files && req.files.images){
-                req.files.images.forEach(image => {
-                    fs.unlinkSync(path.join(TEMP_DIRECTORY, image.filename));
+            if(req.body["associated-images"]){
+                req.body["associated-images"].split(",").forEach(image => {
+                    fs.unlinkSync(path.join(TEMP_DIRECTORY, image));
                 });
             }
 

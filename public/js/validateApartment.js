@@ -9,9 +9,16 @@ window.addEventListener("load", function(){
     const doc = document.getElementById("doc");
     const images = document.getElementById("images");
     const form = document.querySelector("form");
+    const submitButton = document.getElementById("submit-button");
+    const resetButton = document.getElementById("reset-button");
     // Borrado de archivos
     const imgShower = document.getElementById("img-shower");
     const documentsContainer = document.getElementById("documents-container");
+
+    const filesHistory = { // Registro de archivos subidos
+        images : [],
+        doc : []
+    }
 
     // *********** Utilidades ***********
     function handleFeedback(element, feedback){ // Remarca los errores
@@ -24,16 +31,55 @@ window.addEventListener("load", function(){
         }
     }
 
-    function filesFeedback(){
-        let msg = "";
+    async function uploadFiles(event){ // Subida de archivos asincrónica
+        // Bloqueo temporal de elementos
+        submitButton.disabled = true;
+        resetButton.disabled = true;
+        images.disabled = true;
+        doc.disabled = true;
 
-        if(this.files.length > 1){
-            msg = this.files.length + " archivos seleccionados."
-        } else {
-            msg = "1 archivo seleccionado."
+        const files = event.target.files;
+        const formField = event.target.name;
+        const totalFiles = files.length;
+        const feedback = this.nextElementSibling;
+
+        if(filesHistory[formField].length){
+            // Borrado de archivos ya subidos
+            let data = new FormData();
+            data.append("deleteString", filesHistory[formField].toString());
+
+            await fetch("/api/apartments/temp",{
+                method : "DELETE",
+                body : data
+            });
+
+            filesHistory[formField] = [];
+        }
+        
+        // Subida de archivos
+        for(let i = 0; i < totalFiles; i ++){
+            feedback.innerHTML = `Subiendo archivos... ${i}/${totalFiles}`;
+
+            let data = new FormData();
+            data.append(formField, files[i]);
+            
+            let response = await fetch("/api/apartments/upload", {
+                method : "POST",
+                body : data
+            })
+            .then(result => result.json());
+            
+            filesHistory[formField].push(response.data.filename);
         }
 
-        this.nextElementSibling.innerHTML = msg;
+        feedback.innerHTML = totalFiles + " archivos seleccionados."
+
+        // Desbloqueo de los elementos
+        submitButton.disabled = false;
+        resetButton.disabled = false;
+        images.disabled = false;
+        doc.disabled = false;
+
     }
 
     // *********** Validaciones ***********
@@ -104,11 +150,20 @@ window.addEventListener("load", function(){
         validateDescription();
         validatePrice();
 
+        // Adición de archivos
+        if(filesHistory.images.length){
+            document.getElementById("associated-images").value = filesHistory.images.toString();
+        }
+
+        if(filesHistory.doc.length){
+            document.getElementById("associated-docs").value = filesHistory.doc.toString();
+        }
+
         if(Object.keys(errors).length) event.preventDefault(); // Cancelación del evento
     });
 
     // Feedback visual de los archivos seleccionados
-    images.addEventListener("change", filesFeedback);
-    doc.addEventListener("change", filesFeedback);
+    images.addEventListener("change", uploadFiles);
+    doc.addEventListener("change", uploadFiles);
 
 });

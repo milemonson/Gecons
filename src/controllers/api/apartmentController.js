@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const { Apartment, Document, Image } = require("../../database/models");
 
+const TEMP_DIRECTORY = path.join(__dirname, "..", "..", "..", "tmp");
 const DOCS_DIRECTORY = path.join(__dirname, "..", "..", "..", "docs");
 const IMG_DIRECTORY = path.join(__dirname, "..", "..", "..", "public", "img", "uploaded");
 const LIMIT_PER_PAGE = 10;
@@ -86,7 +87,40 @@ module.exports = {
     },
 
     /**
-     * Borrado de documentos.
+     * Subida de archivos a través de fetch.
+     */
+    uploadFile : (req, res) => {
+        
+        const filename = req.files.images ? req.files.images[0].filename : req.files.doc[0].filename;
+
+        res.status(200).json({
+            meta : {
+                status : 200,
+                statusMsg : "Ok",
+            },
+            data : {
+                filename : filename
+            }
+        });
+
+    },
+
+    /**
+     * Borrado de archivos temporales descartados. 
+     */
+    deleteTempFiles : (req, res) => {
+
+        const filesToDelete = req.body.deleteString.split(",");
+        filesToDelete.forEach(file => {
+            fs.unlinkSync(path.join(TEMP_DIRECTORY, file));
+        });
+        
+        res.status(204).json();
+
+    },
+
+    /**
+     * Borrado de documentos ya asociados en BD.
      */
     deleteDocument : async (req, res) => {
         const id = Number(req.query.id);
@@ -104,7 +138,7 @@ module.exports = {
     },
 
     /**
-     * Borrado de imágenes.
+     * Borrado de imágenes ya asociadas en BD.
      */
     deleteImage : async (req, res) => {
         const id = Number(req.query.id);

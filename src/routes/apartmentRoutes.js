@@ -16,8 +16,7 @@ router.get("/list/:bId", userRoute, controller.show);
 // Creación
 router.get("/add", adminRoute, controller.create);
 router.post("/add",
-            adminRoute,
-            upload.fields([{ name : "doc" }, { name : "images" }]), 
+            adminRoute, 
             createApartmentValidator, 
             controller.store);
 
@@ -25,12 +24,11 @@ router.post("/add",
 router.get("/:id/edit", adminRoute, controller.edit);
 router.put("/:id/edit",
             adminRoute,
-            upload.fields([{ name : "doc" }, { name : "images" }]), 
             editApartmentValidator,
             controller.update);
 
 // Descarga de documentos
-router.get("/download/:doc", userRoute,controller.download);
+router.get("/download/:doc", userRoute, controller.download);
 
 // Borrado de deptos
 router.delete("/delete/:id", adminRoute, controller.delete);
