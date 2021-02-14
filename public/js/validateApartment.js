@@ -43,36 +43,43 @@ window.addEventListener("load", function(){
         const totalFiles = files.length;
         const feedback = this.nextElementSibling;
 
-        if(filesHistory[formField].length){
-            // Borrado de archivos ya subidos
-            let data = new FormData();
-            data.append("deleteString", filesHistory[formField].toString());
-
-            await fetch("/api/apartments/temp",{
-                method : "DELETE",
-                body : data
-            });
-
-            filesHistory[formField] = [];
+        try {
+            if(filesHistory[formField].length){
+                // Borrado de archivos ya subidos
+                let data = new FormData();
+                data.append("deleteString", filesHistory[formField].toString());
+    
+                await fetch("/api/apartments/temp",{
+                    method : "DELETE",
+                    body : data
+                });
+    
+                filesHistory[formField] = [];
+            }
+            
+            // Subida de archivos
+            for(let i = 0; i < totalFiles; i ++){
+                feedback.innerHTML = `Subiendo archivos... ${i}/${totalFiles}`;
+    
+                let data = new FormData();
+                data.append(formField, files[i]);
+                data.append("formField", formField);
+                
+                let response = await fetch("/api/apartments/upload", {
+                    method : "POST",
+                    body : data
+                })
+                .then(result => result.json());
+                
+                if(response.meta.status == 415) throw new Error("Sólo se soportan imágenes.");
+                else filesHistory[formField].push(response.data.filename);
+            }
+    
+            feedback.innerHTML = totalFiles + " archivos seleccionados."
+        } catch (error) {
+            feedback.innerHTML = error.message;
         }
         
-        // Subida de archivos
-        for(let i = 0; i < totalFiles; i ++){
-            feedback.innerHTML = `Subiendo archivos... ${i}/${totalFiles}`;
-
-            let data = new FormData();
-            data.append(formField, files[i]);
-            
-            let response = await fetch("/api/apartments/upload", {
-                method : "POST",
-                body : data
-            })
-            .then(result => result.json());
-            
-            filesHistory[formField].push(response.data.filename);
-        }
-
-        feedback.innerHTML = totalFiles + " archivos seleccionados."
 
         // Desbloqueo de los elementos
         submitButton.disabled = false;

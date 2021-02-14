@@ -20,4 +20,17 @@ let storage = multer.diskStorage({
     }
 });
 
-module.exports = { storage : storage }
+function fileFilter (req, file, cb) { // Filtro de imágenes
+
+    if(file.fieldname == "images" && !file.mimetype.startsWith("image")){
+        cb(null, false);
+    } else {
+        cb(null, true);
+    }
+
+}
+
+module.exports = { 
+    storage : storage,
+    fileFilter : fileFilter
+}

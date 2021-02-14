@@ -90,18 +90,28 @@ module.exports = {
      * Subida de archivos a través de fetch.
      */
     uploadFile : (req, res) => {
-        
-        const filename = req.files.images ? req.files.images[0].filename : req.files.doc[0].filename;
 
-        res.status(200).json({
-            meta : {
-                status : 200,
-                statusMsg : "Ok",
-            },
-            data : {
-                filename : filename
-            }
-        });
+        if(req.files[req.body.formField]){
+            const filename = req.files[req.body.formField][0].filename; // Nombre del archivo
+
+            res.status(200).json({
+                meta : {
+                    status : 200,
+                    statusMsg : "Ok",
+                },
+                data : {
+                    filename : filename
+                }
+            });
+
+        } else {
+            res.status(415).json({
+                meta : {
+                    status : 415,
+                    statusMsg : "Unsupported Media Type",
+                }
+            });
+        }
 
     },
 
