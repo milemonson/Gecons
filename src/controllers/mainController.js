@@ -1,11 +1,26 @@
 const path = require("path");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
-const { sendMail } = require("../utils/sendMail");
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
 const { validationResult } = require("express-validator");
 const { Admin, Building, Token } = require("../database/models");
 
 const SALT_NUMBER = 12;
+dotenv.config({ path : path.join(__dirname, "..", "..", "..",".env") });
+
+// Objeto "transportador" que se encarga de enviar el mail a través de SMTP
+// Para tráfico no encriptado usar el puerto 587 y setear "secure" a false
+// Para tráfico encriptado usar el puerto 465 y setear "secure" a true
+let mailTransporter = nodemailer.createTransport( {
+    host : process.env.TRANSPORTER_HOST,
+    port : Number(process.env.TRANSPORTER_PORT),
+    secure : Boolean(process.env.TRANSPORTER_SECURE),
+    auth : {
+        user : process.env.TRANSPORTER_AUTH_USER,
+        pass : process.env.TRANSPORTER_AUTH_PASS
+    }
+});
 
 module.exports = {
 
@@ -147,24 +162,22 @@ module.exports = {
     },
 
     // Envío de mails desde el formulario de contacto del index
-    contactMail : (req, res) => {
+    contactMail : async (req, res) => {
         const { email, subject, phone, name, message } = req.body;
 
         const mail = {
-            from : "no-reply@gecons.ar",
+            from : '"Gecons" <no-reply@gecons.ar>',
             to : email,
             subject : subject,
             body : `${name} \n${phone} \n${message}`
         }
 
-        // TODO : Atajar el error de envío de mails
-        sendMail(mail)
-            .then(() => {
-                res.redirect("/");
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        await mailTransporter.sendMail(mail, (error, info) => {
+            console.log(error);
+            console.log(info);
+        });
+
+        res.redirect("/");
     },
 
     // Envío de mails desde la sección de creación de departamentos
