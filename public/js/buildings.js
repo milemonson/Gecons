@@ -167,9 +167,10 @@ window.addEventListener("load", function(){
         spinner.style.height = "70px";
         spinner.style.animation = "spin 2s linear infinite";
         spinner.style.position = "relative";
-        spinner.style.left = "150%";
         spinner.style.marginTop = "15px";
-
+        if(window.screen.width > 360) spinner.style.left = "170%";
+        else spinner.style.left = "150%";
+        
         return spinner;
     }
 

@@ -129,8 +129,9 @@ window.addEventListener("load", function () {
         spinner.style.height = "70px";
         spinner.style.animation = "spin 2s linear infinite";
         spinner.style.position = "relative";
-        spinner.style.left = "175%";
         spinner.style.marginTop = "15px";
+        if(window.screen.width > 360) spinner.style.left = "185%";
+        else spinner.style.left = "175%";
 
         return spinner;
     }
