@@ -22,6 +22,12 @@ window.addEventListener("load", function(){
 
     // Llenado de la tabla
     function loadTable(page){
+        tableBody.innerHTML = "";
+        // Borrado del cartel de "sin resultados"
+        if(container.querySelector("#no-results") != null){
+            container.removeChild(noResults);
+        }
+
         tableBody.appendChild(spinner);
 
         apiCall(`/api/buildings/list?page=${page}&filter=${filter.value}`, (result) => {
@@ -30,24 +36,28 @@ window.addEventListener("load", function(){
             let content = "";
 
             if(result.meta.count != 0){
-                // Borrado del cartel de "sin resultados"
-                if(container.querySelector("#no-results") != null){
-                    container.removeChild(noResults);
-                }
 
                 result.data.forEach(element => {
+                    // Limitación de caracteres para que no se deforme la tabla
+                    let name = element.name;
+                    if(name.length > 12){
+                        name = name.substring(0,9) + "...";
+                    }
+
                     content += 
                         `<tr>
                             <th>
-                                <a href="/admin/apartments/list/${element.id}">${element.name}</a>
+                                <a href="/admin/apartments/list/${element.id}">${name}</a>
                             </th>
                             <td>${element.apartments}</td>
                             <td>
-                                <a href="/admin/buildings/${element.id}/edit">
+                                <a href="/admin/buildings/${element.id}/edit" class="text-dark">
                                     <i class="fas fa-edit"></i>
                                 <a>
                             </td>
-                            <td data-id="${element.id}"><i class="fas fa-trash-alt"></i></td>
+                            <td data-id="${element.id}" class="text-dark" style="cursor : pointer;">
+                                <i class="fas fa-trash-alt"></i>
+                            </td>
                         </tr>`;
                 });
             } else {
@@ -141,6 +151,7 @@ window.addEventListener("load", function(){
 
         const h3 = document.createElement("h3");
         h3.innerText = "No hubo resultados...";
+        h3.classList.add("h4", "text-dark");
         noResults.appendChild(h3);
 
         return noResults;

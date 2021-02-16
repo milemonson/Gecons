@@ -11,7 +11,7 @@
         <form action="/admin/buildings/add" method="POST">
             <!-- Nombre -->
             <div class="form-group">
-                <label for="name">Nombre del edificio</label>
+                <label for="name" class="text-dark h5 mt-2">Nombre del edificio:</label>
                 <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp"
                     value="<%= locals.userInput && userInput.name ? userInput.name : '' %>">
                 <small id="nameHelp" class="form-text text-muted">
@@ -24,10 +24,10 @@
             
             <!-- Contraseña -->
             <div class="form-row">
-                <label for="password">Contraseña de ingreso</label>
+                <label for="password" class="text-dark h5">Contraseña de ingreso:</label>
             </div>
-            <div class="form-row align-items-center w-100">
-                <div class="col-8 col-sm-10">
+            <div class="form-row align-items-center justify-content-between w-100">
+                <div class="col-9 col-sm-10">
                     <div class="input-group mb-2">
                         <div class="input-group-prepend">
                             <div class="input-group-text" id="show-password">
@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 
-                <div class="col-2">
+                <div class="w-auto">
                     <button type="button" class="btn btn-primary mb-2" id="autogenerate">
                         Generar
                     </button>
@@ -57,7 +57,7 @@
 
             <!-- Enviar a.. -->
             <div class="form-group">
-                <label for="send-to">Enviar a:</label>
+                <label for="send-to" class="text-dark h5 mt-2">Enviar a:</label>
                 <input type="email" class="form-control" id="send-to" name="send-to" aria-describedby="sendToHelp"
                     value="<%= locals.userInput && userInput["send-to"] ? userInput["send-to"] : '' %>">
                 <small id="sendToHelp" class="form-text text-muted">

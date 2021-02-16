@@ -18,6 +18,11 @@ window.addEventListener("load", function () {
             .then(result => callback(result));
     }
 
+    function parseDate(date){ // Formateo de fechas a dd/mm/aa
+        let parsed = date.split("-");
+        return parsed[2] + "/" + parsed[1] + "/" + parsed[0].substring(2,5);
+    }
+
     function loadTable(page) { // Armado de la tabla
         tableBody.innerHTML = "";
         tableBody.appendChild(spinner);
@@ -29,25 +34,27 @@ window.addEventListener("load", function () {
             if (result.meta.count > 0) {
 
                 result.data.forEach(element => {
-                    const initDate = new Date(element.initDate);
-                    const endDate = new Date(element.endDate);
-                    const createdAt = new Date(element.createdAt);
+                    // Limitación de caracteres para que no se deforme la tabla
+                    let name = element.name;
+                    if(name.length > 7) name = name.substring(0,5) + "...";
 
+                    let { initDate, endDate, createdAt } = element;
+                    
                     content +=
                         `<tr class="text-center">
-                            <th>
+                            <th class="align-middle">
                                 <a href="/admin/apartments/${element.id}">
-                                    ${element.name}
+                                    ${name}
                                 <a>
                             </th>
-                            <td>${initDate.toLocaleDateString("es-AR", { timeZone : "UTC" })} 
+                            <td>${parseDate(initDate)} 
                                 <br/> 
-                                ${endDate.toLocaleDateString("es-AR", { timeZone : "UTC" })}
+                                ${parseDate(endDate)}
                             </td>
-                            <td>
-                                ${createdAt.toLocaleDateString("es-AR", { timeZone : "UTC" })}
+                            <td class="align-middle">
+                                ${parseDate(createdAt)}
                             </td>
-                            <td>${element.price}</td>
+                            <td class="align-middle">${Math.round(element.price)}</td>
                         </tr>`;
                 });
             } else {
@@ -106,6 +113,7 @@ window.addEventListener("load", function () {
 
         const h3 = document.createElement("h3");
         h3.innerText = "No hubo resultados...";
+        h3.classList.add("h4", "text-dark");
         noResults.appendChild(h3);
 
         return noResults;
@@ -121,7 +129,7 @@ window.addEventListener("load", function () {
         spinner.style.height = "70px";
         spinner.style.animation = "spin 2s linear infinite";
         spinner.style.position = "relative";
-        spinner.style.left = "150%";
+        spinner.style.left = "175%";
         spinner.style.marginTop = "15px";
 
         return spinner;

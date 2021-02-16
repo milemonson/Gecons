@@ -9,13 +9,13 @@
 
         <%- include("../partials/tabs", { active : 2 }) %>
         
-        <h2>Añadiendo departamento a: <%= building.name %></h2>
+        <h2 class="text-dark text-center my-3">Añadiendo en <%= building.name %></h2>
 
         <form action="/admin/apartments/add" method="POST">
 
             <!-- Nombre -->
             <div class="form-group">
-                <label for="name">Nombre del departamento:</label>
+                <label for="name" class="text-dark h5 mt-2">Nombre del departamento:</label>
                 <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp"
                     value="<%= locals.userInput && userInput.name ? userInput.name : '' %>">
                 <small id="nameHelp" class="form-text text-muted">
@@ -28,7 +28,7 @@
 
             <!-- Descripción -->
             <div class="form-group">
-                <label for="description">Descripción:</label>
+                <label for="description" class="text-dark h5 mt-2">Descripción:</label>
                 <textarea class="form-control" id="description" name="description" rows="3" aria-describedby="descHelp"><%= locals.userInput && userInput.description ? userInput.description : '' %></textarea>
                 <small id="nameHelp" class="form-text text-muted">
                     Campo opcional. Máximo 1000 caracteres.
@@ -40,8 +40,8 @@
 
             <!-- Fechas de inicio y fin -->
             <div class="form-row justify-content-around">
-                <div class="form-group">
-                    <label for="init-date">Fecha de inicio:</label>
+                <div class="form-group my-0">
+                    <label for="init-date" class="w-100 text-dark text-center">Fecha de inicio:</label>
                     <input class="form-control" type="date" id="init-date" name="init-date" aria-describedby="initHelp"
                         value="<%= locals.userInput && userInput["init-date"] ? userInput["init-date"] : '' %>">
                     <small id="initHelp" class="form-text text-muted">
@@ -51,7 +51,7 @@
                     </small>
                 </div>
                 <div class="form-group">
-                    <label for="end-date">Fecha de finalización:</label>
+                    <label for="end-date" class="w-100 text-dark text-center">Fecha de finalización:</label>
                     <input class="form-control" type="date" id="end-date" name="end-date" aria-describedby="endHelp"
                         value="<%= locals.userInput && userInput["end-date"] ? userInput["end-date"] : '' %>">
                     <small id="endHelp" class="form-text text-muted">
@@ -63,7 +63,7 @@
             </div>
 
             <!-- Monto -->
-            <label for="price">Monto:</label>
+            <label for="price" class="text-dark h5 mt-2">Monto:</label>
             <div class="form-row input-group mb-3">
                 <input type="text" class="form-control" id="price" name="price" aria-label="Monto" aria-describedby="priceHelp"
                     value="<%= locals.userInput && userInput.price ? userInput.price : '' %>">
@@ -86,7 +86,10 @@
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="doc" name="doc" aria-describedby="docHelp" multiple>
                     <!-- Información del archivo desde el script -->
-                    <label class="custom-file-label" for="doc">Elegir archivos.</label>
+                    <label class="custom-file-label" for="doc">
+                        <span class="d-none d-sm-inline">Elegir archivos.</span>
+                        <span class="d-inline d-sm-none">Subir documentos.</span>
+                    </label>
                 </div>
             </div>
             <small id="docHelp" class="form-text text-muted">
@@ -108,7 +111,10 @@
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="images" name="images" aria-describedby="imagesHelp" multiple>
                     <!-- Información de las imágenes desde el script -->
-                    <label class="custom-file-label" for="images">Elegir Imágenes</label>
+                    <label class="custom-file-label" for="images">
+                        <span class="d-none d-sm-inline">Elegir imágenes.</span>
+                        <span class="d-inline d-sm-none">Subir imágenes.</span>
+                    </label>
                 </div>
             </div>
             <small id="docHelp" class="form-text text-muted">
@@ -122,7 +128,7 @@
             <input type="hidden" name="buildingId" value="<%= building.id %>">
 
             <!-- Botones -->
-            <div class="form-row justify-content-around">
+            <div class="form-row justify-content-around my-3">
                 <button class="btn btn-primary" type="submit" id="submit-button">Enviar</button>
                 <button class="btn btn-primary" type="reset" id="reset-button">Resetear</button>
             </div>

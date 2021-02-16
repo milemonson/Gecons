@@ -7,16 +7,16 @@
     <div class="container">
         <%- include("../partials/tabs", { active : 3 }) %>
 
-        <h2 class="h5 text-center">Perfil: <%= locals.admin.name %></h2>
+        <h2 class="h5 text-center text-dark mb-2 mt-3">Perfil: <%= locals.admin.name %></h2>
 
         <form action="/profile?_method=PUT" method="POST">
 
             <!-- Contraseña -->
             <div class="form-row">
-                <label for="password">Cambiar contraseña:</label>
+                <label for="password" class="text-dark h5 mt-2">Cambiar contraseña:</label>
             </div>
-            <div class="form-row align-items-center w-100">
-                <div class="col-8 col-sm-10">
+            <div class="form-row align-items-center justify-content-between w-100">
+                <div class="col-9 col-sm-10">
                     <div class="input-group mb-2">
                         <div class="input-group-prepend">
                             <div class="input-group-text" id="show-password">
@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 
-                <div class="col-2">
+                <div class="w-auto">
                     <button type="button" class="btn btn-primary mb-2" id="autogenerate">
                         Generar
                     </button>
@@ -45,7 +45,7 @@
 
             <!-- Submit -->
             <div class="form-row">
-                <label for="password">Contraseña actual:</label>
+                <label for="password" class="text-dark h5 mt-2">Contraseña actual:</label>
             </div>
             <div class="form-row align-items-center w-100">
                 <div class="input-group mb-2">
@@ -64,7 +64,7 @@
                 </div>
             <% } %>
 
-            <div class="form-row justify-content-around">
+            <div class="form-row justify-content-around my-3">
                 <button class="btn btn-primary" type="submit">Enviar</button>
                 <button class="btn btn-primary" type="reset">Resetear</button>
             </div>

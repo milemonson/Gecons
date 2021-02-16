@@ -9,13 +9,13 @@
 
         <%- include("../partials/tabs", { active : 2 }) %>
         
-        <h2>Editando el departamento: <%= apartment.name %>, en <%= apartment.Building.name %></h2>
+        <h2 class="text-dark h3 text-center my-3">Editando <%= apartment.name %> en <%= apartment.Building.name %></h2>
 
         <form action="/admin/apartments/<%= apartment.id %>/edit?_method=PUT" method="POST">
 
             <!-- Nombre -->
             <div class="form-group">
-                <label for="name">Nombre del departamento:</label>
+                <label for="name" class="text-dark h5 mt-2">Nombre del departamento:</label>
                 <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp"
                     value="<%= locals.apartment && apartment.name ? apartment.name : '' %>">
                 <small id="nameHelp" class="form-text text-muted">
@@ -28,7 +28,7 @@
 
             <!-- Descripción -->
             <div class="form-group">
-                <label for="description">Descripción:</label>
+                <label for="description" class="text-dark h5 mt-2">Descripción:</label>
                 <textarea class="form-control" id="description" name="description" rows="3" aria-describedby="descHelp"><%= locals.userInput && userInput.description ? userInput.description : ( locals.apartment && apartment.description ? apartment.description : '' ) %></textarea>
                 <small id="nameHelp" class="form-text text-muted">
                     Campo opcional. Máximo 1000 caracteres.
@@ -40,8 +40,8 @@
 
             <!-- Fechas de inicio y fin -->
             <div class="form-row justify-content-around">
-                <div class="form-group">
-                    <label for="init-date">Fecha de inicio:</label>
+                <div class="form-group my-0">
+                    <label for="init-date" class="w-100 text-dark text-center">Fecha de inicio:</label>
                     <input class="form-control" type="date" id="init-date" name="init-date" aria-describedby="initHelp"
                         value="<%= locals.apartment && apartment.initDate ? apartment.initDate : '' %>">
                     <small id="initHelp" class="form-text text-muted">
@@ -50,8 +50,8 @@
                         <% } %>
                     </small>
                 </div>
-                <div class="form-group">
-                    <label for="end-date">Fecha de finalización:</label>
+                <div class="form-group my-0">
+                    <label for="end-date" class="w-100 text-dark text-center">Fecha de finalización:</label>
                     <input class="form-control" type="date" id="end-date" name="end-date" aria-describedby="endHelp"
                         value="<%= locals.apartment && apartment.endDate ? apartment.endDate : '' %>">
                     <small id="endHelp" class="form-text text-muted">
@@ -63,7 +63,7 @@
             </div>
 
             <!-- Monto -->
-            <label for="price">Monto:</label>
+            <label for="price" class="text-dark h5 mt-2">Monto:</label>
             <div class="form-row input-group mb-3">
                 <input type="text" class="form-control" id="price" name="price" aria-label="Monto" aria-describedby="priceHelp"
                     value="<%= locals.apartment && apartment.price ? apartment.price : '' %>">
@@ -81,20 +81,21 @@
             <!-- Borrado y  descarga de documentos -->
             <% if(apartment.Documents.length) { %>
                 <div class="form-row" id="documents-container">
-                    <label>Documentos subidos:</label>
+                    <label class="text-dark h5 mt-2">Documentos subidos:</label>
                     <% apartment.Documents.forEach(doc => { %>
-                        <div class="form-row input-group mt-3 mb-3">
+                        <div class="form-row input-group my-1">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
                                     <a href="/admin/apartments/download/<%= doc.url %>">
-                                        <i class="fas fa-download"></i>
+                                        <i class="fas fa-download text-dark"></i>
                                     </a>
                                 </span>
                             </div>
                             <input type="text" class="form-control bg-white" readonly value="<%= doc.url %>">
-                            <div class="input-group-append delete-document" data-id="<%= doc.id %>" data-url="<%= doc.url %>">
+                            <div class="input-group-append delete-document" data-id="<%= doc.id %>" 
+                                data-url="<%= doc.url %>" style="cursor: pointer;">
                                 <span class="input-group-text">
-                                    <i class="fas fa-times"></i>
+                                    <i class="fas fa-times text-dark"></i>
                                 </span>
                             </div>
                         </div>
@@ -110,7 +111,10 @@
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="doc" name="doc" aria-describedby="docHelp" multiple>
                     <!-- Información del archivo desde el script -->
-                    <label class="custom-file-label" for="doc">Elegir archivos.</label>
+                    <label class="custom-file-label" for="doc">
+                        <span class="d-none d-sm-inline">Elegir archivos.</span>
+                        <span class="d-inline d-sm-none">Subir documentos.</span>
+                    </label>
                 </div>
             </div>
             <small id="docHelp" class="form-text text-muted">
@@ -122,7 +126,7 @@
 
             <!-- TODO : Muestra de las imágenes y opción de borrado -->
             <% if(apartment.Images.length){ %>
-                <label for="img-shower">Imágenes subidas:</label>
+                <label for="img-shower" class="text-dark h5 mt-2">Imágenes subidas:</label>
                 <div class="form-row container border border-secondary rounded"
                     style="display: flex; justify-content: space-around;"
                     id="img-shower">
@@ -152,7 +156,8 @@
                     <input type="file" class="custom-file-input" id="images" name="images" aria-describedby="imagesHelp" multiple>
                     <!-- Información de las imágenes desde el script -->
                     <label class="custom-file-label" for="images">
-                        Elegir imágenes
+                        <span class="d-none d-sm-inline">Elegir imágenes.</span>
+                        <span class="d-inline d-sm-none">Subir imágenes.</span>
                     </label>
                 </div>
             </div>
@@ -167,7 +172,7 @@
             <input type="hidden" name="buildingId" value="<%= apartment.Building.id %>">
 
             <!-- Botones -->
-            <div class="form-row justify-content-around">
+            <div class="form-row justify-content-around mb-3">
                 <button class="btn btn-primary" type="submit" id="submit-button">Enviar</button>
                 <button class="btn btn-primary" type="reset" id="reset-button">Resetear</button>
             </div>

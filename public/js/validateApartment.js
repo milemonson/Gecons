@@ -123,6 +123,8 @@ window.addEventListener("load", function(){
         document.querySelectorAll(".delete-document").forEach(element => {
             let parentContainer = element.parentElement;
             element.addEventListener("click", function(){
+                this.firstElementChild.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
+
                 fetch(`/api/apartments/document?id=${this.dataset.id}&doc=${this.dataset.url}`,
                     { method : "DELETE" })
                     .then(() => {

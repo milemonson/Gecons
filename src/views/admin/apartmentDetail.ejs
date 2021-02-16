@@ -9,15 +9,15 @@
 
         <%- include("../partials/tabs", { active : 2 }) %>
 
-        <h2><%= apartment.name %>, en <%= apartment.Building.name %></h2>
+        <h2 class="text-dark text-center my-3"><%= apartment.name %>, en <%= apartment.Building.name %></h2>
         <% if(locals.apartment.description) { %>
-            <p class="border rounded border-secondary px-3 py-2">
+            <p class="border rounded border-black-50 text-center p-2">
                 <%= apartment.description %>
             </p>
         <% } %>
 
         <!-- Fechas de inicio y fin -->
-        <div class="d-flex justify-content-around">
+        <div class="d-flex justify-content-around text-dark my-2">
             <div class="d-flex flex-column d-inline-block">
                 <h3 class="h6">Fecha de inicio:</h3>
                 <span class="d-block text-center">
@@ -33,7 +33,7 @@
         </div>
 
         <!-- Precio -->
-        <div class="form-row input-group mb-3">
+        <div class="form-row input-group my-3">
             <div class="input-group-append">
                 <span class="input-group-text">Monto:</span>
             </div>
@@ -42,13 +42,13 @@
 
         <!-- Descargar documento -->
         <% if(apartment.Documents.length) { %>
-            <label>Documentos subidos:</label>
+            <label class="text-dark h5 mt-2">Documentos subidos:</label>
             <% apartment.Documents.forEach(doc => { %>
-                <div class="form-row input-group mt-3 mb-3">
+                <div class="form-row input-group my-2">
                     <div class="input-group-prepend">
                         <span class="input-group-text">
                             <a href="/admin/apartments/download/<%= doc.url %>">
-                                <i class="fas fa-download"></i>
+                                <i class="fas fa-download text-dark"></i>
                             </a>
                         </span>
                     </div>
@@ -59,13 +59,14 @@
 
         <!-- Imágenes -->
         <% if(apartment.Images.length){ %>
-            <label for="carouselExampleControls">Imágenes subidas:</label>
+            <label for="carouselExampleControls" class="text-dark h5 mt-2">Imágenes subidas:</label>
             <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
+                <div class="carousel-inner" >
                     <% apartment.Images.map((img, index) => { %>
-                        <div class="carousel-item <%= index == 0 ? 'active' : '' %>">
+                        <div class="carousel-item carousel-img <%= index == 0 ? 'active' : '' %>">
                             <img src="/img/uploaded/<%= img.url %>" 
-                                class="d-block w-100" alt="Imagen ilustrativa del departamento">
+                                class="d-block w-auto" 
+                                alt="Imagen ilustrativa del departamento">
                           </div>
                     <% }); %>
                 </div>
@@ -82,7 +83,7 @@
 
         <!-- Botones de edición/borrado -->
         <% if(locals.admin) { %>
-            <form class="d-flex justify-content-around" method="POST" 
+            <form class="d-flex justify-content-around my-3" method="POST" 
                 action="/admin/apartments/delete/<%= apartment.id %>?_method=DELETE">
                 <a class="btn btn-primary" href="/admin/apartments/<%= apartment.id %>/edit">Editar</a>
                 <button class="btn btn-primary" type="submit">Borrar</button>
@@ -90,6 +91,16 @@
         <% } %>
 
     </div>
+
+    <style>
+        .carousel-img {
+            height: 225px;
+            max-height: 225px;
+        }
+            .carousel-img img {
+                object-fit: cover;
+            }
+    </style>
 
     <!-- JS de Bootstrap -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
