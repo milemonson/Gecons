@@ -1,7 +1,18 @@
 @font-face {
   font-family: "akkoItalic", sans-serif;
   src: url("Akko W04 Bold Italic.ttf"); }
+
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.section-header {
+    text-shadow: -1px 2px 4px white;
+}
+
 html {
+    width: 100vw !important;
   scroll-behavior: smooth; }
   html body {
     position: relative;

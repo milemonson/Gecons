@@ -60,14 +60,19 @@ p{
     text-align: center;
 }
 
-@media(min-width:768px)
+@media(min-width:361px)
 {
     .formulario{
         margin: auto;
         width: 500px;
-        margin-top: 150px;
+        margin-top: 15px;
         border-radius: 2%;
     }
+}
+
+@media(min-width:768px)
+{
+    .formulario{ margin-top: 150px; }
 }
 
 
