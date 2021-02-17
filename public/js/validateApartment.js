@@ -137,7 +137,9 @@ window.addEventListener("load", function(){
     if(imgShower){ // Borrado asincrónico de imágenes
         document.querySelectorAll(".delete-image").forEach(element => {
             let parentContainer = element.parentElement;
+            
             element.addEventListener("click", function(){
+                element.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
                 fetch(`/api/apartments/image?id=${this.dataset.id}&url=${this.dataset.url}`,
                     { method : "DELETE" })
                     .then(() => {

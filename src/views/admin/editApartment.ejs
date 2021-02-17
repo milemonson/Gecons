@@ -127,15 +127,15 @@
             <!-- TODO : Muestra de las imágenes y opción de borrado -->
             <% if(apartment.Images.length){ %>
                 <label for="img-shower" class="text-dark h5 mt-2">Imágenes subidas:</label>
-                <div class="form-row container border border-secondary rounded"
+                <div class="form-row container border border-secondary rounded py-3"
                     style="display: flex; justify-content: space-around;"
                     id="img-shower">
                     <% apartment.Images.forEach(img => { %>
-                        <div style="position: relative; width: 30%;">
+                        <div style="position: relative; width: 30%;" class="py-1">
                             <img src="/img/uploaded/<%= img.url %>" alt="Imagen del departamento"
-                                style="width: 100%; border-radius: 2%;">
-                            <div style="position: absolute; right: 0; top: 0; background-color: white; width: 25%; text-align: center;"
-                                data-id="<%= img.id %>" data-url="<%= img.url %>" class="delete-image">
+                                style="border-radius: 2%;" class="w-100">
+                            <div style="position: absolute; right: 0; top: 0; background-color: white; width: 25%; text-align: center; cursor: pointer;"
+                                data-id="<%= img.id %>" data-url="<%= img.url %>" class="rounded-bottom delete-image">
                                 <i class="fas fa-times"></i>
                             </div>
                         </div>
