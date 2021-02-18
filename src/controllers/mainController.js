@@ -15,11 +15,7 @@ dotenv.config({ path : path.join(__dirname, "..", "..", "..",".env") });
 let mailTransporter = nodemailer.createTransport( {
     host : process.env.TRANSPORTER_HOST,
     port : Number(process.env.TRANSPORTER_PORT),
-    secure : Boolean(process.env.TRANSPORTER_SECURE),
-    auth : {
-        user : process.env.TRANSPORTER_AUTH_USER,
-        pass : process.env.TRANSPORTER_AUTH_PASS
-    }
+    secure : Boolean(process.env.TRANSPORTER_SECURE)
 });
 
 module.exports = {
@@ -172,10 +168,7 @@ module.exports = {
             body : `${name} \n${phone} \n${message}`
         }
 
-        await mailTransporter.sendMail(mail, (error, info) => {
-            console.log(error);
-            console.log(info);
-        });
+        await mailTransporter.sendMail(mail);
 
         res.redirect("/");
     },
