@@ -12,10 +12,14 @@ dotenv.config({ path : path.join(__dirname, "..", "..", "..",".env") });
 // Objeto "transportador" que se encarga de enviar el mail a través de SMTP
 // Para tráfico no encriptado usar el puerto 587 y setear "secure" a false
 // Para tráfico encriptado usar el puerto 465 y setear "secure" a true
-let mailTransporter = nodemailer.createTransport( {
+let mailTransporter = nodemailer.createTransport({
     host : process.env.TRANSPORTER_HOST,
     port : Number(process.env.TRANSPORTER_PORT),
-    secure : Boolean(process.env.TRANSPORTER_SECURE)
+    secure : Boolean(process.env.TRANSPORTER_SECURE),
+    auth : {
+        user : process.env.TRANSPORTER_AUTH_USER,
+        pass : process.env.TRANSPORTER_AUTH_PASS
+    }
 });
 
 module.exports = {
@@ -165,7 +169,7 @@ module.exports = {
             from : '"Gecons" <no-reply@gecons.ar>',
             to : email,
             subject : subject,
-            body : `${name} \n${phone} \n${message}`
+            text : `${name} \n${phone} \n${message}`
         }
 
         await mailTransporter.sendMail(mail);
